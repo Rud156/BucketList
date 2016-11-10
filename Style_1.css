@@ -1,0 +1,106 @@
+/*General Styles Applicable To All Pages*/
+@media only screen and (max-width: 480px) {
+	.col {  
+        margin: 1% 0 1% 0%; 
+    }
+	.span{ 
+        width: 100%; 
+    }
+    .left, .right{
+        float: none;
+        margin: 0;
+        width: 100%;
+    }
+    .ul{
+        float: none;
+    }
+    .options{
+        margin-bottom: 1.2em;
+    }
+}
+body{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    cursor: default;
+    font-family: 'Lobster', cursive;
+    overflow: auto;
+    transition-duration: 1s;
+    text-align: center;
+}
+div{
+    left: 0;
+    width: 100%;
+    overflow: auto;
+    text-align: center;
+}
+nav{
+    background: lightseagreen;
+    color: white;
+    font-size: 1.2em;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    position: fixed;
+}
+.h2{
+    font-size: 1.4em;
+}
+.ul{
+    list-style-type: none;
+    float: right;
+}
+.options{
+    float: left;
+    text-align: center;
+    padding: 10px 20px;
+    margin: auto;
+    transition-duration: 1s;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: 0 10px;
+}
+.options:hover{
+    background: white;
+    color: dodgerblue;
+}
+.left, .right{
+    width: 45%;
+    font-family: 'Lobster', cursive;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+    margin-right: 2em;
+}
+#container{
+    background-image: url('Images/Image.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+
+/*Page Specific Styles*/
+#userPic{
+    padding-top: 100px;
+    height: auto;
+}
+.profilePic{
+    border-radius: 10%;
+}
+.userDetails{
+    font-size: 1.5em;
+    margin: 15px 0;
+}
+#userBuckets{
+    background: white;
+}
+#heading{
+    font-size: 2.5em;
+    color: coral;
+    padding: 1em 0;
+}

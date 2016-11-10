@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="stylesheet" href="Style.css"/>
+        <script src="JS/jquery-2.2.3.js"></script>
+        <script src="JS/jquery.matchHeight.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
+        <title> Bucket List </title>
+    </head>
+    <body>
+        <nav>
+            <div id="navList">
+                <div class="left">
+                    <h2 class="h2">
+                        A place to share your dreams and wishes
+                    </h2>
+                </div>
+                <div class="right">
+                    <ul class="ul">
+                        <li id="loginBtn" class="options"> Log In  </li>
+                        <li id="signUpBtn" class="options"> Sign Up </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="loginModal" class="modal">
+            <form class="modal-content">
+                <span class="close" id="loginClose">x</span>
+                <br> <br>
+                <input type="text" name="userName" placeholder="Enter username..." required/>
+                <br>
+                <input type="password" name="passWord" placeholder="Enter password..." required/>
+                <br>
+                <br>
+                <button type="submit" class="btn"> Login In </button>
+            </form>
+        </div>
+        <div id="signUpModal" class="modal">
+            <form class="modal-content">
+                <span class="close" id="signUpClose">x</span>
+                <br> <br>
+                <input type="text" name="userName" placeholder="Enter username..." required/>
+                <br>
+                <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass"/>
+                <br>
+                <input type="password" name="rePass" placeholder="Re-Enter password..." required id="secondPass"/>
+                <br>
+                <div id="flashMessage"></div>
+                <br>
+                <button type="submit" id="submitButton" class="btn"> Sign Up </button>
+            </form>
+        </div>
+        <div id="container">
+            <div id="aboutUs">
+                <h3>
+                    We take care of the crazy stuff so you can pour you heart into your words and tell it to the world.
+                </h3>
+            </div>
+            <div id="feedId">
+                Here are some popular lists to inspire you to wish more and make them come true...
+            </div>
+            <div id="popularFeeds">
+                <div id="feedHolder">
+                    <div class="section group">
+                        <div class="col span matchheight">
+                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            Put Some Content Here
+                        </div>
+                        <div class="col span matchheight">
+                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            Put Some Content Here
+                        </div>
+                        <div class="col span matchheight">
+                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            Put Some Content Here
+                        </div>
+                    </div>
+                    <div class="section group">
+                        <div class="col span matchheight">
+                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            Put Some Content Here
+                        </div>
+                        <div class="col span matchheight">
+                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            Put Some Content Here
+                        </div>
+                        <div class="col span matchheight">
+                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            Put Some Content Here.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="left">
+                    <span class="endFooter"> Connect With Us: </span>
+                    <ul class="ul" style="float: none">
+                        <li class="link"> Lorem Ipsum </li>
+                        <li class="link"> Lorem Ipsum </li>
+                        <li class="link"> Lorem Ipsum </li>
+                    </ul>
+                </div>
+                <div class="right">
+                    <span class="endFooter"> About Us: </span>
+                    <br>
+                    <span class="endFooter" style="color: purple">
+                        We just want to make a way for you to remember your wishes and let others know about it as well.
+                    </span>
+                </div>
+            </div>
+            <div class="footer" id="footer">
+                Made and Designed by Rudrangshu Nandi
+            </div>
+        </div>
+        <script>
+        jQuery(function($){
+            $('.matchheight').matchHeight();
+        });
+
+        var modal_1 = $("#loginModal");
+        var modal_2 = $("#signUpModal");
+        var btn_1 = document.getElementById("loginBtn");
+        var btn_2 = document.getElementById("signUpBtn");
+        var span_1 = document.getElementById("loginClose");
+        var span_2 = document.getElementById("signUpClose");
+
+        btn_1.onclick = function() {
+            modal_1.fadeIn();
+        }
+        btn_2.onclick = function(){
+            modal_2.fadeIn();
+        }
+        span_1.onclick = function() {
+            modal_1.fadeOut();
+        }
+        span_2.onclick = function(){
+            modal_2.fadeOut();
+        }
+        window.onclick = function(event) {
+            if (event.target.id === "loginModal") {
+                modal_1.fadeOut();
+            }
+            if(event.target.id === "signUpModal")
+                modal_2.fadeOut();
+        }
+        </script>
+
+        <script>
+			var firstPass = document.querySelector("#firstPass");
+			var secondPass = document.querySelector("#secondPass");
+			var message = document.querySelector("#flashMessage");
+			var button = document.querySelector("#submitButton");
+
+			$(document).ready(function(){
+				button.disabled = true;
+			});
+			
+			$('#firstPass').keyup(function(){
+				if(firstPass.value === secondPass.value && firstPass.value !== "" && secondPass.value !== ""){
+					message.innerHTML = "Passwords match";
+					button.disabled = false;
+				}
+				else if(firstPass.value !== secondPass.value  && firstPass.value !== "" && secondPass.value !== ""){
+					message.innerHTML = "Passwords do not match";
+					button.disabled = true;
+				}
+			});
+
+			$("#secondPass").keyup(function(){
+				if(firstPass.value !== secondPass.value && firstPass.value !== "" && secondPass.value !== ""){
+					message.innerHTML = "Passwords do not match";
+					button.disabled = true;
+				}
+				else if(firstPass.value === secondPass.value  && firstPass.value !== "" && secondPass.value !== ""){
+					message.innerHTML = "Passwords match";
+					button.disabled = false;
+				}
+			});
+		</script>
+    </body>
+</html>
