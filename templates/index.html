@@ -2,10 +2,10 @@
 <html>
     <head>
         <meta charset="UTF-8"/>
-        <link rel="stylesheet" href="Style.css"/>
-        <script src="JS/jquery-2.2.3.js"></script>
-        <script src="JS/jquery.matchHeight.js"></script>
+        <link rel="stylesheet" href="../static/Style.css"/>
         <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
+        <script src="../static/JS/jquery-2.2.3.js"></script>
+        <script src="../static/JS/jquery.matchHeight.js"></script>
         <title> Bucket List </title>
     </head>
     <body>
@@ -25,28 +25,35 @@
             </div>
         </nav>
         <div id="loginModal" class="modal">
-            <form class="modal-content">
+            <form class="modal-content" action="{{url_for('login')}}" method="POST">
                 <span class="close" id="loginClose">x</span>
                 <br> <br>
-                <input type="text" name="userName" placeholder="Enter username..." required/>
+                <input type="text" name="userName" placeholder="Enter username..." required class="coolInput"/>
                 <br>
-                <input type="password" name="passWord" placeholder="Enter password..." required/>
+                <input type="password" name="passWord" placeholder="Enter password..." required class="coolInput"/>
                 <br>
+                <div class="flashMessage" id="loginMessage">
+                    {{get_flashed_messages(category_filter=["login"])[0]}}
+                </div>
                 <br>
                 <button type="submit" class="btn"> Login In </button>
             </form>
         </div>
         <div id="signUpModal" class="modal">
-            <form class="modal-content">
+            <form class="modal-content" action="{{url_for('register')}}" method="POST">
                 <span class="close" id="signUpClose">x</span>
                 <br> <br>
-                <input type="text" name="userName" placeholder="Enter username..." required/>
+                <input type="text" name="userName" placeholder="Enter username..." required class="coolInput"/>
                 <br>
-                <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass"/>
+                <input type="url" name="userPic" placeholder="Enter url to profile image..." required class="coolInput"/>
                 <br>
-                <input type="password" name="rePass" placeholder="Re-Enter password..." required id="secondPass"/>
+                <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass" class="coolInput"/>
                 <br>
-                <div id="flashMessage"></div>
+                <input type="password" name="rePass" placeholder="Re-Enter password..." required id="secondPass" class="coolInput"/>
+                <br>
+                <div class="flashMessage" id="flashMessage">
+                    {{get_flashed_messages(category_filter=["signup"])[0]}}
+                </div>
                 <br>
                 <button type="submit" id="submitButton" class="btn"> Sign Up </button>
             </form>
@@ -64,29 +71,29 @@
                 <div id="feedHolder">
                     <div class="section group">
                         <div class="col span matchheight">
-                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
                             Put Some Content Here
                         </div>
                         <div class="col span matchheight">
-                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
                             Put Some Content Here
                         </div>
                         <div class="col span matchheight">
-                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
                             Put Some Content Here
                         </div>
                     </div>
                     <div class="section group">
                         <div class="col span matchheight">
-                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
                             Put Some Content Here
                         </div>
                         <div class="col span matchheight">
-                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
                             Put Some Content Here
                         </div>
                         <div class="col span matchheight">
-                            <img src="Images/DefaultImage.jpg" width="100%"/>
+                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
                             Put Some Content Here.
                         </div>
                     </div>
@@ -124,6 +131,8 @@
         var btn_2 = document.getElementById("signUpBtn");
         var span_1 = document.getElementById("loginClose");
         var span_2 = document.getElementById("signUpClose");
+        var signUpMessage = document.querySelector("#flashMessage");
+        var loginMessage = document.querySelector("#loginMessage");
 
         btn_1.onclick = function() {
             modal_1.fadeIn();
@@ -144,6 +153,13 @@
             if(event.target.id === "signUpModal")
                 modal_2.fadeOut();
         }
+
+        $(document).ready(function(){
+            if(signUpMessage.innerHTML.trim() !== "")
+                modal_2.fadeIn();
+            else if(loginMessage.innerHTML.trim() !== "")
+                modal_1.fadeIn();
+        });
         </script>
 
         <script>

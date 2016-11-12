@@ -2,7 +2,7 @@
 	.col {  
         margin: 1% 0 1% 0%; 
     }
-	.span{ 
+	.span, .inputHeads{ 
         width: 100%; 
     }
     #feedHolder{
@@ -74,28 +74,40 @@ nav{
     background-attachment: fixed;
     background-size: cover;
 }
-input {
+.coolInput{
     text-align: center;
     background-color: rgba(255, 255, 255, 0.3);
     border: 2px solid transparent;
     border-radius: 3px;
-    font-size: 1em;
-    font-weight: 200;
+    font-size: 1.2em;
     padding: 5px 0;
     margin: 5px 0;
     width: 250px;
     transition: border .5s;
+    font-family: 'Lobster', cursive;
 }
-input:focus {
+.coolInput:focus {
     border: 2px solid #3498DB;
     box-shadow: none;
+}
+input::-webkit-input-placeholder{
+    color: black !important;
+}
+input:-moz-placeholder{
+    color: black !important;
+}
+input::-moz-placeholder{
+    color: black !important;
+}
+input:-ms-input-placeholder{
+    color: #ffcc66 !important;
 }
 .btn {
     border: 2px solid transparent;
     font-family: 'Lobster', cursive;
     background: gold;
     color: #111;
-    font-size: 2em;
+    font-size: 1.5em;
     line-height: 25px;
     padding: 10px 0;
     text-decoration: none;
@@ -182,7 +194,7 @@ input:focus {
     zoom: 1; 
 }
 .span{
-    width: 32.33%;
+    width: 32.33%; /*49.25 for 2, 18.8 for 5*/
     background-color: lightpink;
     border-radius: 10px;
 }
@@ -260,4 +272,44 @@ input:focus {
 #previewBody{
     all: unset !important;
     text-align: left !important;
+}
+
+
+/* DashBoard.html style starts here */
+#userPic{
+    padding-top: 100px;
+    height: auto;
+}
+.profilePic{
+    border-radius: 10%;
+}
+.userDetails{
+    font-size: 1.5em;
+    margin: 15px 0;
+}
+#userBuckets{
+    background: white;
+}
+#heading{
+    font-size: 2.5em;
+    color: coral;
+    padding: 1em 0;
+}
+#buckets{
+    width: 90%;
+    margin-left: 5%;
+}
+#userBuckets{
+    background: url('Images/Image.jpg');
+}
+.wishInput{
+    background-color: rgba(0,0,0,0.1) !important;
+    width: 90% !important;
+    font-size: 0.7em;
+}
+.inputHeads{
+    font-size: 1.5em;
+    background: transparent !important;
+    width: 49.25% !important;
+    text-align: left;
 }
