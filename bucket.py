@@ -26,6 +26,7 @@ def login():
         if bcrypt.hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
                 login_user['password'].encode('utf-8'):
             session['username'] = request.form['userName']
+            session['picture'] = login_user['picture']
             return redirect(url_for('index'))
 
     message = Markup("Invalid username or password...")
