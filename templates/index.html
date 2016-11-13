@@ -4,6 +4,7 @@
         <meta charset="UTF-8"/>
         <link rel="stylesheet" href="../static/Style.css"/>
         <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
+        <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png"/>
         <script src="../static/JS/jquery-2.2.3.js"></script>
         <script src="../static/JS/jquery.matchHeight.js"></script>
         <title> Bucket List </title>
@@ -45,7 +46,11 @@
                 <br> <br>
                 <input type="text" name="userName" placeholder="Enter username..." required class="coolInput"/>
                 <br>
-                <input type="url" name="userPic" placeholder="Enter url to profile image..." required class="coolInput"/>
+                <input type="url" name="userPic" required class="coolInput" placeholder="Enter URL to profile image..."/>
+                <!--<button class="coolInput" style="margin-left: 10px" onclick="inputClick()"> 
+                    Click here to select profile image 
+                </button>
+                <input type="file" style="display: none" id="picSelect" onchange="createURI(this.files)"> -->
                 <br>
                 <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass" class="coolInput"/>
                 <br>

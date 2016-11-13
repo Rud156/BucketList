@@ -4,6 +4,7 @@
         <meta charset="UTF-8"/>
         <link rel="stylesheet" href="../static/Style.css"/>
         <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
+        <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png"/>
         <script src="../static/JS/jquery-2.2.3.js"></script>
         <script src="../static/JS/jquery.matchHeight.js"></script>
         <title> My Bucket List </title>
@@ -71,7 +72,7 @@
             <div id="userPic">
                 <img src="{{session['picture']}}" width="250px" class="profilePic"/>
                 <br>
-                <div class="userDetails"> Rud156 </div>
+                <div class="userDetails"> {{session['username']}} </div>
                 <div class="userDetails"> Livin' Learin' n Havin' Fun </div>
             </div>
             <div id="userBuckets">
