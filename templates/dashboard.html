@@ -70,10 +70,10 @@
         </div>
         <div id="container">
             <div id="userPic">
-                <img src="{{session['picture']}}" width="250px" class="profilePic"/>
+                <img src="http://localhost:5000/images/{{session['picture']}}" width="250px" class="profilePic"/>
                 <br>
                 <div class="userDetails"> {{session['username']}} </div>
-                <div class="userDetails"> Livin' Learin' n Havin' Fun </div>
+                <div class="userDetails"> {{session['quote']}} </div>
             </div>
             <div id="userBuckets">
                 <div id="heading">

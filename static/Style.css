@@ -47,6 +47,9 @@ nav{
     width: 100%;
     position: fixed;
 }
+.flashMessage{
+    color: #ff5722;
+}
 .h2{
     font-size: 1.4em;
 }
