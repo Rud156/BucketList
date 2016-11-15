@@ -1,15 +1,12 @@
 from flask import Flask, render_template, url_for, request, session, redirect, flash, Markup, make_response
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
-from bson.objectid import ObjectId
 from gridfs import GridFS
 import bcrypt
 
 allowed_extensions = ('png', 'jpg', 'gif', 'jpeg')
 
 app = Flask(__name__)
-app.config['MONGO_DBNAME'] = 'BucketList'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/BucketList'
 client = MongoClient('localhost:27017')
 db = client.BucketList
 users = db.allUsers
@@ -22,13 +19,6 @@ def allowed_check(file_name):
         return True
     else:
         return False
-
-
-def get_image(object_id):
-    image_file = file_system.get(ObjectId(object_id))
-    response = make_response(image_file.read())
-    response.mimetype = image_file.content_type
-    return response
 
 
 @app.route('/')
@@ -48,11 +38,6 @@ def login():
         if bcrypt.hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
                 login_user['password'].encode('utf-8'):
             session['username'] = request.form['userName']
-
-            '''image = get_image(login_user['picture'])
-            image = convert_image(image.data, image.content_type)
-            session['picture'] = '<img class="profilePic" width="250px" src="{}" />'.format(image)'''
-
             session['picture'] = login_user['pictureName']
             session['quote'] = login_user['quote']
             return redirect(url_for('index'))
@@ -69,6 +54,7 @@ def register():
 
         if existing_user is None:
             hash_pass = bcrypt.hashpw(request.form['passWord'].encode('utf-8'), bcrypt.gensalt())
+            # noinspection PyShadowingNames
             file_image = request.files['file']
             result = allowed_check(file_image.filename)
             if not result:
