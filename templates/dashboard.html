@@ -30,7 +30,7 @@
             </div>
         </nav>
         <div id="createModal" class="modal">
-            <form class="modal-content">
+            <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}">
                 <span class="close" id="createClose">x</span>
                 <br> <br>
                 <div class="section group">
@@ -38,7 +38,7 @@
                         Pour your wish into the box:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a wish or dream...">
+                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a wish or dream..." name="wishName">
                     </div>
                 </div>
                 <div class="section group">
@@ -46,7 +46,7 @@
                         Select an image to represent your wish:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="url" required class="wishInput coolInput" placeholder="Awaiting an image to represent it...">
+                        <input type="url" required class="wishInput coolInput" placeholder="Awaiting an image to represent it..." name="wishPic">
                     </div>
                 </div>
                 <div class="section group">
@@ -54,7 +54,7 @@
                         Put tags to tag your wishes:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a tag (seperate tags by ';')...">
+                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a tag (seperate tags by ';')..." name="tags">
                     </div>
                 </div>
                 <div class="section group">
@@ -62,7 +62,7 @@
                         Put a date you would like to complete it by:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="date" required class="wishInput coolInput" placeholder="yyyy-mm-dd format">
+                        <input type="date" required class="wishInput coolInput" placeholder="yyyy-mm-dd format" name="date">
                     </div>
                 </div>
                 <button type="submit" class="btn"> Create n Add to List </button>
@@ -79,21 +79,28 @@
                 <div id="heading">
                     Here are your wishes put into buckets:
                 </div>
+                <div id="itemCount" style="display: none">{{session['count']}}</div>
+                <div id="emptyMessage" style="display: none">
+                    <img src="../static/Images/EmptyToDo.jpg"/>
+                    <br> <br>
+                    There's nothing to show right now.
+                    <span id="openModal" onclick="openCreate()">
+                        Why not create a new Bucket List?
+                    </span>
+                </div>
                 <div id="buckets">
-                    <div class="section group">
-                        <div class="col span matchheight">
-                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
-                            Put Some Content Here
+                    {% set counter = 0 %}
+                    {% for i in range(0, (session['count']|int / 3)|int + 1) %}
+                        <div class="section group">
+                            {% for j in range(counter, session['count']|int if counter + 3 > 1 else counter + 3) %}
+                                <div class="col span matchheight">
+                                    <img src="{{ result[j]['picture'] }}" width="100%"/>
+                                    {{ result[j]['name'] }}
+                                </div>
+                                {% set counter = counter + 1 %}
+                            {% endfor %}
                         </div>
-                        <div class="col span matchheight">
-                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
-                             Put Some Content Here
-                        </div>
-                        <div class="col span matchheight">
-                            <img src="../static/Images/DefaultImage.jpg" width="100%"/>
-                            Put Some Content Here
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
             <div class="footer" id="footer">
@@ -120,6 +127,17 @@
             }
             function invisibleClick(){
                 logoutBtn.click();
+            }
+        </script>
+        <script>
+            var element = document.querySelector("#itemCount");
+            var messageBox = document.querySelector("#emptyMessage");
+            if(parseInt(element.innerHTML) === 0){
+                messageBox.style.display = "block";
+            }
+
+            function openCreate(){
+                document.querySelector("#createBtn").click();
             }
         </script>
     </body>

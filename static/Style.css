@@ -316,3 +316,12 @@ input:-ms-input-placeholder{
     width: 49.25% !important;
     text-align: left;
 }
+#emptyMessage{
+    font-size: 2em;
+    color: red;
+    padding: 50px 0;
+}
+#openModal{
+    color: orange;
+    cursor: pointer;
+}
