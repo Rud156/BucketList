@@ -72,7 +72,7 @@ nav{
     color: dodgerblue;
 }
 #container{
-    background-image: url('Images/Image.jpg');
+    background-image: url('../Images/Image.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -303,7 +303,7 @@ input:-ms-input-placeholder{
     margin-left: 5%;
 }
 #userBuckets{
-    background: url('Images/Image.jpg');
+    background: url('../Images/Image.jpg');
 }
 .wishInput{
     background-color: rgba(0,0,0,0.1) !important;
@@ -324,4 +324,57 @@ input:-ms-input-placeholder{
 #openModal{
     color: orange;
     cursor: pointer;
+}
+.hidden{
+    display: none;
+}
+#imageInput{
+    opacity: 0;
+    position: absolute;
+    height: 0;
+    width: 0;
+}
+#createModal{
+    overflow: hidden;
+}
+#displayModal .span{
+    width: 49.25% !important;
+    background: transparent !important;
+}
+#displayModal img{
+    box-shadow: 0 0 10px 10px black;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+#Name, #Date, #DateDiff{
+    font-size: 1.7em;
+    color: rebeccapurple;
+    padding: 26px 0;
+}
+.open{
+    overflow: hidden;
+    width: auto;
+}
+
+/* This is for jQuery tagger style overriding */
+#tags_tagsinput{
+    overflow: hidden !important;
+    margin: 0 25px !important;
+    height: auto !important;
+    width: auto !important;
+    min-height: auto !important;
+    cursor: pointer;
+    border: none;
+}
+#tags_addTag{
+    width: initial !important;
+}
+#tags_tag{
+    font-family: 'Lobster', cursive;
+    height: auto !important;
+    width: auto !important;
+    font-size: 0.8em;
+}
+span.tag{
+    border-radius: 20% !important;
 }

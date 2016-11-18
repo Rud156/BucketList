@@ -2,8 +2,9 @@ from flask import Flask, render_template, url_for, request, session, redirect, f
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from gridfs import GridFS
+from datetime import datetime
 import bcrypt
-import re
+
 
 allowed_extensions = ('png', 'jpg', 'gif', 'jpeg')
 values = []
@@ -26,16 +27,17 @@ def allowed_check(file_name):
 def get_wishes(user_name):
     login_user = users.find_one({'_id': user_name})
     count = int(login_user['count'])
+    session['count'] = login_user['count']
     del values[:]
     for i in range(0, count):
-        print "Value of count: " + str(i)
         data_set = {
             'name': login_user[str(i)]['wish_name'],
-            'picture': login_user[str(i)]['wish_pic']
+            'picture': login_user[str(i)]['wish_pic'],
+            'date': login_user[str(i)]['date'],
+            'tags': login_user[str(i)]['tags'],
+            'dateDiff': (datetime.strptime(login_user[str(i)]['date'], "%Y-%m-%d").date() - datetime.now().date()).days
         }
         values.append(data_set)
-
-    print "Result: " + str(values)
 
 
 @app.route('/')
@@ -48,27 +50,32 @@ def index():
         return render_template('index.html')
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
-    login_user = users.find_one({'_id': request.form['userName']})
+    if request.method == 'POST':
+        login_user = users.find_one({'_id': request.form['userName']})
 
-    if login_user is not None:
-        if bcrypt.hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
-                login_user['password'].encode('utf-8'):
-            session['username'] = request.form['userName']
-            session['picture'] = login_user['pictureName']
-            session['quote'] = login_user['quote']
-            session['count'] = login_user['count']
-            return redirect(url_for('index', result=values))
+        if login_user is not None:
+            if bcrypt.hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
+                    login_user['password'].encode('utf-8'):
+                session['username'] = request.form['userName']
+                session['picture'] = login_user['pictureName']
+                session['quote'] = login_user['quote']
+                session['count'] = login_user['count']
+                return redirect(url_for('index'))
 
-    message = Markup("Invalid username or password...")
-    flash(message, category='login')
-    return render_template('index.html')
+        message = Markup("Invalid username or password...")
+        flash(message, category='login')
+        return render_template('index.html')
+
+    else:
+        return redirect(url_for('index'))
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
+        print "Function Called"
         existing_user = users.find_one({'_id': request.form['userName']})
 
         if existing_user is None:
@@ -101,34 +108,46 @@ def register():
             flash(message=message, category='signup')
             return redirect(url_for('index'))
 
+    else:
+        return redirect(url_for('index'))
 
-@app.route('/logout', methods=['POST'])
+
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.clear()
     return redirect(url_for('index'))
 
 
-@app.route('/submitWish', methods=['POST'])
+@app.route('/submitWish', methods=['POST', 'GET'])
 def submit_wish():
+    if request.method == 'POST':
+        tags = request.form['bucketTags']
+        tags = tags.split("    ;")
+        # noinspection PyShadowingNames
+        file_image = request.files['imageFile']
+        result = allowed_check(file_image.filename)
+        if not result:
+            message = "Incorrect file type. Please input correct file('png', 'jpg', 'gif', 'jpeg')..."
+            flash(message, category='submit')
+            return redirect(url_for('index'))
 
-    tags = request.form['tags']
-    tags = tags.split(";")
-    for i in range(0, len(tags)):
-        tags[i] = tags[i].strip()
+        file_name = secure_filename(file_image.filename)
+        object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
 
-    data_set = {
-        'wish_name': request.form['wishName'],
-        'wish_pic': request.form['wishPic'],
-        'date': request.form['date'],
-        'tags': tags
-    }
+        data_set = {
+            'wish_name': request.form['wishName'],
+            'wish_pic': file_name,
+            'objectId': object_id,
+            'date': request.form['date'],
+            'tags': tags
+        }
 
-    current_user = users.find_one({'_id': session['username']})
-    count = int(current_user['count'])
-    users.update({'_id': session['username']}, {'$set': {str(count): data_set}}, upsert=True)
-    users.update({'_id': session['username']}, {'$set': {'count': str(count + 1)}}, upsert=True)
+        current_user = users.find_one({'_id': session['username']})
+        count = int(current_user['count'])
+        users.update({'_id': session['username']}, {'$set': {str(count): data_set}}, upsert=True)
+        users.update({'_id': session['username']}, {'$set': {'count': str(count + 1)}}, upsert=True)
 
-    return render_template('dashboard.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/images/<filename>')

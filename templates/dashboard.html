@@ -2,11 +2,15 @@
 <html>
     <head>
         <meta charset="UTF-8"/>
-        <link rel="stylesheet" href="../static/Style.css"/>
+        <link rel="stylesheet" href="../static/CSS/Style.css"/>
+        <link rel="stylesheet" href="../static/CSS/flatpickr.css"/>
+        <link rel="stylesheet" href="../static/CSS/jquery.tagsinput.css"/>
         <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
         <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png"/>
         <script src="../static/JS/jquery-2.2.3.js"></script>
         <script src="../static/JS/jquery.matchHeight.js"></script>
+        <script src="../static/JS/flatpickr.js"></script>
+        <script src="../static/JS/jquery.tagsinput.js"></script>
         <title> My Bucket List </title>
     </head>
     <body>
@@ -29,8 +33,32 @@
                 </div>
             </div>
         </nav>
+        <div id="displayModal" class="modal">
+            <form class="modal-content">
+                <span class="close" id="displayClose">x</span>
+                <br> <br>
+                <div class="section group">
+                    <div class="col span">
+                        <img width="400px"/>
+                    </div>
+                    <div class="col span">
+                        <div id="Name"></div>
+                        <div id="Date"></div>
+                        <div id="DateDiff"></div>
+                    </div>
+                </div>
+                <div class="section group">
+                    <div class="col span matchheight">
+                        <button type="submit" class="btn"> Edit Bucket </button>
+                    </div>
+                    <div class="col span matchHeight">
+                        <button type="submit" class="btn"> Mark as Complete </button>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div id="createModal" class="modal">
-            <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}">
+            <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}" enctype="multipart/form-data">
                 <span class="close" id="createClose">x</span>
                 <br> <br>
                 <div class="section group">
@@ -46,7 +74,10 @@
                         Select an image to represent your wish:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="url" required class="wishInput coolInput" placeholder="Awaiting an image to represent it..." name="wishPic">
+                        <button class="wishInput coolInput" id="inputActivator" onclick="inputClick()">
+                            Click here to select image...
+                        </button>
+                        <input type="file" accept="image/*" name="imageFile" required onchange="displayName(files)" id="imageInput"/>
                     </div>
                 </div>
                 <div class="section group">
@@ -54,7 +85,8 @@
                         Put tags to tag your wishes:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a tag (seperate tags by ';')..." name="tags">
+                        <input required class="wishInput coolInput" placeholder="Awaiting a tag..." name="tags" id="tags"/>
+                        <input style="display: none" type="text" name="bucketTags" id="hiddenTags"/>
                     </div>
                 </div>
                 <div class="section group">
@@ -62,8 +94,11 @@
                         Put a date you would like to complete it by:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="date" required class="wishInput coolInput" placeholder="yyyy-mm-dd format" name="date">
+                        <input type="text" required class="wishInput coolInput flatpickr" placeholder="Select date..." name="date">
                     </div>
+                </div>
+                <div class="flashMessage" id="submitBucket">
+                    {{get_flashed_messages(category_filter=["submit"])[0]}}
                 </div>
                 <button type="submit" class="btn"> Create n Add to List </button>
             </form>
@@ -89,17 +124,36 @@
                     </span>
                 </div>
                 <div id="buckets">
-                    {% set counter = 0 %}
-                    {% for i in range(0, (session['count']|int / 3)|int + 1) %}
-                        <div class="section group">
-                            {% for j in range(counter, session['count']|int if counter + 3 > 1 else counter + 3) %}
-                                <div class="col span matchheight">
-                                    <img src="{{ result[j]['picture'] }}" width="100%"/>
-                                    {{ result[j]['name'] }}
-                                </div>
-                                {% set counter = counter + 1 %}
-                            {% endfor %}
-                        </div>
+                    {% for i in range(0, session['count']|int) %}
+                        {% if i % 3 == 0 %}
+                            <div class="col span" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
+                                <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%"/>
+                                {{result[i]['name']}}
+                                <span class="hidden">
+                                    {{result[i]['date']}}
+                                </span>
+                                <span class="hidden">
+                                    {{result[i]['tags']}}
+                                </span>
+                                <span class="hidden">
+                                    {{result[i]['dateDiff']}}
+                                </span>
+                            </div>
+                        {% else %}
+                            <div class="col span" style="height: 300px; cursor: pointer" onclick="displayAll(event)">
+                                <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%"/>
+                                {{result[i]['name']}}
+                                <span class="hidden">
+                                    {{result[i]['date']}}
+                                </span>
+                                <span class="hidden">
+                                    {{result[i]['tags']}}
+                                </span>
+                                <span class="hidden">
+                                    {{result[i]['dateDiff']}}
+                                </span>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -107,38 +161,11 @@
                 Made and Designed by Rudrangshu Nandi
             </div>
         </div>
+        <script src="../static/JS/DashScript.js"></script>
         <script>
-            jQuery(function($){
-                $('.matchheight').matchHeight();
-            });
-            var modal_1 = $("#createModal");
-            var btn_1 = document.getElementById("createBtn");
-            var span_1 = document.getElementById("createClose");
-            var logoutBtn = document.querySelector("#emptyButton");
-            btn_1.onclick = function() {
-                modal_1.fadeIn();
-            }
-            span_1.onclick = function() {
-                modal_1.fadeOut();
-            }
-            window.onclick = function(event) {
-                if (event.target.id === "createModal") 
-                    modal_1.fadeOut();
-            }
-            function invisibleClick(){
-                logoutBtn.click();
-            }
-        </script>
-        <script>
-            var element = document.querySelector("#itemCount");
-            var messageBox = document.querySelector("#emptyMessage");
-            if(parseInt(element.innerHTML) === 0){
-                messageBox.style.display = "block";
-            }
-
-            function openCreate(){
-                document.querySelector("#createBtn").click();
-            }
+            flatpickr(".flatpickr");
+            $('#tags').tagsInput();
+            document.querySelector("#tags_tagsinput").className = "wishInput coolInput tagsinput";
         </script>
     </body>
 </html>
