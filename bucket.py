@@ -150,7 +150,6 @@ def submit_wish():
         users.update({'_id': session['username']}, {'$set': {'count': str(count + 1)}}, upsert=True)
         buckets.insert_one(data_set)
         for tag in tags:
-            print "Current Tag: " + tag
             data = all_tags.find({'_id': tag})
             count = data.count()
             if count <= 0:

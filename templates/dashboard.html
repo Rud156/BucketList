@@ -1,171 +1,169 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8"/>
-        <link rel="stylesheet" href="../static/CSS/Style.css"/>
-        <link rel="stylesheet" href="../static/CSS/flatpickr.css"/>
-        <link rel="stylesheet" href="../static/CSS/jquery.tagsinput.css"/>
-        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
-        <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png"/>
-        <script src="../static/JS/jquery-2.2.3.js"></script>
-        <script src="../static/JS/jquery.matchHeight.js"></script>
-        <script src="../static/JS/flatpickr.js"></script>
-        <script src="../static/JS/jquery.tagsinput.js"></script>
-        <title> My Bucket List </title>
-    </head>
-    <body>
-        <nav>
-            <div id="navList">
-                <div class="left">
-                    <h2 class="h2">
-                        Welcome {{session['username']}}
-                    </h2>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../static/CSS/Style.css" />
+    <link rel="stylesheet" href="../static/CSS/flatpickr.css" />
+    <link rel="stylesheet" href="../static/CSS/jquery.tagsinput.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png" />
+    <script src="../static/JS/jquery-2.2.3.js"></script>
+    <script src="../static/JS/jquery.matchHeight.js"></script>
+    <script src="../static/JS/flatpickr.js"></script>
+    <script src="../static/JS/jquery.tagsinput.js"></script>
+    <title> My Bucket List </title>
+</head>
+
+<body>
+    <nav>
+        <div id="navList">
+            <div class="left">
+                <h2 class="h2">
+                    Welcome {{session['username']}}
+                </h2>
+            </div>
+            <div class="right">
+                <ul class="ul">
+                    <li class="options" id="createBtn"> Create New Bucket List</li>
+                    <li class="options" id="logOut" onclick="invisibleClick()"> Log Out
+                        <form action="{{url_for('logout')}}" method="POST">
+                            <button style="display: none" id="emptyButton"> </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="displayModal" class="modal">
+        <form class="modal-content">
+            <span class="close" id="displayClose">x</span>
+            <br> <br>
+            <div class="section group">
+                <div class="col span">
+                    <img width="400px" />
                 </div>
-                <div class="right">
-                    <ul class="ul">
-                        <li class="options" id="createBtn"> Create New Bucket List</li>
-                        <li class="options" id="logOut" onclick="invisibleClick()"> Log Out
-                            <form action="{{url_for('logout')}}" method="POST">
-                                <button style="display: none" id="emptyButton"> </button>
-                            </form> 
-                        </li>
-                    </ul>
+                <div class="col span">
+                    <div id="Name"></div>
+                    <div id="Date"></div>
+                    <div id="DateDiff"></div>
                 </div>
             </div>
-        </nav>
-        <div id="displayModal" class="modal">
-            <form class="modal-content">
-                <span class="close" id="displayClose">x</span>
-                <br> <br>
-                <div class="section group">
-                    <div class="col span">
-                        <img width="400px"/>
-                    </div>
-                    <div class="col span">
-                        <div id="Name"></div>
-                        <div id="Date"></div>
-                        <div id="DateDiff"></div>
-                    </div>
+            <div class="section group">
+                <div class="col span matchheight">
+                    <button type="submit" class="btn"> Edit Bucket </button>
                 </div>
-                <div class="section group">
-                    <div class="col span matchheight">
-                        <button type="submit" class="btn"> Edit Bucket </button>
-                    </div>
-                    <div class="col span matchHeight">
-                        <button type="submit" class="btn"> Mark as Complete </button>
-                    </div>
+                <div class="col span matchHeight">
+                    <button type="submit" class="btn"> Mark as Complete </button>
                 </div>
-            </form>
-        </div>
-        <div id="createModal" class="modal">
-            <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}" enctype="multipart/form-data" id="bucketForm">
-                <span class="close" id="createClose">x</span>
-                <br> <br>
-                <div class="section group">
-                    <div class="col span matchheight inputHeads">
-                        Pour your wish into the box:
-                    </div>
-                    <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a wish or dream..." name="wishName" id="bucketName">
-                    </div>
+            </div>
+        </form>
+    </div>
+    <div id="createModal" class="modal">
+        <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}" enctype="multipart/form-data" id="bucketForm">
+            <span class="close" id="createClose">x</span>
+            <br> <br>
+            <div class="section group">
+                <div class="col span matchheight inputHeads">
+                    Pour your wish into the box:
                 </div>
-                <div class="section group">
-                    <div class="col span inputHeads">
-                        Select an image to represent your bucket:
-                    </div>
-                    <div class="col span inputHeads" style="text-align: center">
-                        <span class="wishInput coolInput" id="inputActivator" onclick="inputClick()">
+                <div class="col span matchheight inputHeads" style="text-align: center">
+                    <input type="text" required class="wishInput coolInput" placeholder="Awaiting a wish or dream..." name="wishName" id="bucketName">
+                </div>
+            </div>
+            <div class="section group">
+                <div class="col span inputHeads">
+                    Select an image to represent your bucket:
+                </div>
+                <div class="col span inputHeads" style="text-align: center">
+                    <span class="wishInput coolInput" id="inputActivator" onclick="inputClick()">
                             Click here to select image...
                         </span>
-                        <input type="file" accept="image/*" name="imageFile" required onchange="displayName(files)" id="imageInput"/>
-                    </div>
+                    <input type="file" accept="image/*" name="imageFile" required onchange="displayName(files)" id="imageInput" />
                 </div>
-                <div class="section group">
-                    <div class="col span matchheight inputHeads">
-                        Put tags to tag your wishes:
-                    </div>
-                    <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input required class="wishInput coolInput" placeholder="Awaiting a tag..." name="tags" id="tags"/>
-                        <input style="display: none" type="text" name="bucketTags" id="hiddenTags"/>
-                    </div>
-                </div>
-                <div class="section group">
-                    <div class="col span matchheight inputHeads">
-                        Put a date you would like to complete it by:
-                    </div>
-                    <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput flatpickr" placeholder="Select date..." name="date" id="bucketDate">
-                    </div>
-                </div>
-                <div class="flashMessage" id="submitBucket">
-                    {{get_flashed_messages(category_filter=["submit"])[0]}}
-                </div>
-                <span class="btn" onclick="submitForm()"> Create n Add to List </span>
-            </form>
-        </div>
-        <div id="container">
-            <div id="userPic">
-                <img src="http://localhost:5000/images/{{session['picture']}}" width="250px" class="profilePic"/>
-                <br>
-                <div class="userDetails"> {{session['username']}} </div>
-                <div class="userDetails"> {{session['quote']}} </div>
             </div>
-            <div id="userBuckets">
-                <div id="heading">
-                    Here are your wishes put into buckets:
+            <div class="section group">
+                <div class="col span matchheight inputHeads">
+                    Put tags to tag your wishes:
                 </div>
-                <div id="itemCount" style="display: none">{{session['count']}}</div>
-                <div id="emptyMessage" style="display: none">
-                    <img src="../static/Images/EmptyToDo.jpg"/>
-                    <br> <br>
-                    There's nothing to show right now.
-                    <span id="openModal" onclick="openCreate()">
+                <div class="col span matchheight inputHeads" style="text-align: center">
+                    <input required class="wishInput coolInput" placeholder="Awaiting a tag..." name="tags" id="tags" />
+                    <input style="display: none" type="text" name="bucketTags" id="hiddenTags" />
+                </div>
+            </div>
+            <div class="section group">
+                <div class="col span matchheight inputHeads">
+                    Put a date you would like to complete it by:
+                </div>
+                <div class="col span matchheight inputHeads" style="text-align: center">
+                    <input type="text" required class="wishInput coolInput flatpickr" placeholder="Select date..." name="date" id="bucketDate">
+                </div>
+            </div>
+            <div class="flashMessage" id="submitBucket">
+                {{get_flashed_messages(category_filter=["submit"])[0]}}
+            </div>
+            <span class="btn" onclick="submitForm()"> Create n Add to List </span>
+        </form>
+    </div>
+    <div id="container">
+        <div id="userPic">
+            <img src="http://localhost:5000/images/{{session['picture']}}" width="250px" class="profilePic" />
+            <br>
+            <div class="userDetails"> {{session['username']}} </div>
+            <div class="userDetails"> {{session['quote']}} </div>
+        </div>
+        <div id="userBuckets">
+            <div id="heading">
+                Here are your wishes put into buckets:
+            </div>
+            <div id="itemCount" style="display: none">{{session['count']}}</div>
+            <div id="emptyMessage" style="display: none">
+                <img src="../static/Images/EmptyToDo.jpg" />
+                <br> <br> There's nothing to show right now.
+                <span id="openModal" onclick="openCreate()">
                         Why not create a new Bucket List?
                     </span>
-                </div>
-                <div id="buckets">
-                    {% for i in range(0, session['count']|int) %}
-                        {% if i % 3 == 0 %}
-                            <div class="col span" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                                <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%"/>
-                                {{result[i]['name']}}
-                                <span class="hidden">
-                                    {{result[i]['date']}}
-                                </span>
-                                <span class="hidden">
-                                    {{result[i]['tags']}}
-                                </span>
-                                <span class="hidden">
-                                    {{result[i]['dateDiff']}}
-                                </span>
-                            </div>
-                        {% else %}
-                            <div class="col span" style="height: 300px; cursor: pointer" onclick="displayAll(event)">
-                                <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%"/>
-                                {{result[i]['name']}}
-                                <span class="hidden">
-                                    {{result[i]['date']}}
-                                </span>
-                                <span class="hidden">
-                                    {{result[i]['tags']}}
-                                </span>
-                                <span class="hidden">
-                                    {{result[i]['dateDiff']}}
-                                </span>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
             </div>
-            <div class="footer" id="footer">
-                Made and Designed by Rudrangshu Nandi
+            <div id="buckets">
+                {% for i in range(0, session['count']|int) %} {% if i % 3 == 0 %}
+                <div class="col span" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" /> {{result[i]['name']}}
+                    <span class="hidden">
+                                    {{result[i]['date']}}
+                                </span>
+                    <span class="hidden">
+                                    {{result[i]['tags']}}
+                                </span>
+                    <span class="hidden">
+                                    {{result[i]['dateDiff']}}
+                                </span>
+                </div>
+                {% else %}
+                <div class="col span" style="height: 300px; cursor: pointer" onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" /> {{result[i]['name']}}
+                    <span class="hidden">
+                                    {{result[i]['date']}}
+                                </span>
+                    <span class="hidden">
+                                    {{result[i]['tags']}}
+                                </span>
+                    <span class="hidden">
+                                    {{result[i]['dateDiff']}}
+                                </span>
+                </div>
+                {% endif %} {% endfor %}
             </div>
         </div>
-        <script src="../static/JS/DashScript.js"></script>
-        <script>
+        <div class="footer" id="footer">
+            Made and Designed by Rudrangshu Nandi
+        </div>
+    </div>
+    <script src="../static/JS/DashScript.js"></script>
+    <script>
             flatpickr(".flatpickr");
             $('#tags').tagsInput();
             document.querySelector("#tags_tagsinput").className = "wishInput coolInput tagsinput";
         </script>
-    </body>
+</body>
+
 </html>

@@ -107,7 +107,8 @@ function addToInput() {
     var resultString = "";
     for (var i = 0; i < tags.length; i++) {
         resultString += tags[i].childNodes[0].data;
-        resultString += "    ;";
+        if (i !== tags.length - 1)
+            resultString += "    ;";
     }
     hiddenTags.value = resultString;
 }
