@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8"/>
-        <link rel="stylesheet" href="../static/Style.css"/>
+        <link rel="stylesheet" href="../static/CSS/Style.css"/>
         <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>
         <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png"/>
         <script src="../static/JS/jquery-2.2.3.js"></script>
@@ -41,7 +41,7 @@
             </form>
         </div>
         <div id="signUpModal" class="modal">
-            <form class="modal-content" action="{{url_for('register')}}" method="POST" enctype="multipart/form-data">
+            <form class="modal-content" action="{{url_for('register')}}" method="POST" enctype="multipart/form-data" id="registerForm">
                 <span class="close" id="signUpClose">x</span>
                 <br> <br>
                 <input type="text" name="userName" placeholder="Enter username..." required class="coolInput"/>
@@ -49,9 +49,9 @@
                 <input type="text" name="userQuote" placeholder="Enter your quote here..." required class="coolInput"/>
                 <br>
                 <input type="text" readonly class="coolInput" style="margin-right: 10px" id="picName"/>
-                <button class="coolInput" onclick="inputClick()"> 
+                <span class="coolInput" onclick="inputClick()"> 
                     Click here to select profile image...
-                </button>
+                </span>
                 <input type="file" style="display: none" id="picSelect" name="file" accept="image/*" required onchange="displayName(files)">
                 <br>
                 <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass" class="coolInput"/>
@@ -62,7 +62,7 @@
                     {{get_flashed_messages(category_filter=["signup"])[0]}}
                 </div>
                 <br>
-                <button type="submit" id="submitButton" class="btn"> Sign Up </button>
+                <span id="submitButton" class="btn" onclick="submitForm()"> Sign Up </span>
             </form>
         </div>
         <div id="container">
@@ -131,6 +131,21 @@
             function displayName(files){
                 var fileName = files[0].name;
                 document.querySelector("#picName").value = fileName;
+            }
+
+            function submitForm(){
+                var submit = true;
+                var mainPass = document.querySelector("#firstPass").value.trim();
+                var rePass = document.querySelector("#secondPass").value.trim();
+                var userPic = document.querySelector("#picName").value.trim();
+                var userQuote = document.getElementsByName("userQuote")[0].value.trim();
+                var userName = document.getElementsByName("userName")[1].value.trim();
+                if(mainPass === "" || rePass === "" || userPic === "" || userQuote === "" || userName === "")
+                    submit = false;
+                if(submit)
+                    document.querySelector("#registerForm").submit();
+                else
+                    document.querySelector("#flashMessage").innerHTML = "Please fill all fields...";
             }
         </script>
         <script>

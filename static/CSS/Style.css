@@ -378,3 +378,14 @@ input:-ms-input-placeholder{
 span.tag{
     border-radius: 20% !important;
 }
+
+/* This is to change span into a button */
+span.coolInput{
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* This is to override the styles of the date picker */
+.flatpickr-month{
+    overflow: hidden !important;
+}

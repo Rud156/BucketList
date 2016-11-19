@@ -58,7 +58,7 @@
             </form>
         </div>
         <div id="createModal" class="modal">
-            <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}" enctype="multipart/form-data">
+            <form class="modal-content" method="POST" action="{{url_for('submit_wish')}}" enctype="multipart/form-data" id="bucketForm">
                 <span class="close" id="createClose">x</span>
                 <br> <br>
                 <div class="section group">
@@ -66,17 +66,17 @@
                         Pour your wish into the box:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a wish or dream..." name="wishName">
+                        <input type="text" required class="wishInput coolInput" placeholder="Awaiting a wish or dream..." name="wishName" id="bucketName">
                     </div>
                 </div>
                 <div class="section group">
-                    <div class="col span matchheight inputHeads">
-                        Select an image to represent your wish:
+                    <div class="col span inputHeads">
+                        Select an image to represent your bucket:
                     </div>
-                    <div class="col span matchheight inputHeads" style="text-align: center">
-                        <button class="wishInput coolInput" id="inputActivator" onclick="inputClick()">
+                    <div class="col span inputHeads" style="text-align: center">
+                        <span class="wishInput coolInput" id="inputActivator" onclick="inputClick()">
                             Click here to select image...
-                        </button>
+                        </span>
                         <input type="file" accept="image/*" name="imageFile" required onchange="displayName(files)" id="imageInput"/>
                     </div>
                 </div>
@@ -94,13 +94,13 @@
                         Put a date you would like to complete it by:
                     </div>
                     <div class="col span matchheight inputHeads" style="text-align: center">
-                        <input type="text" required class="wishInput coolInput flatpickr" placeholder="Select date..." name="date">
+                        <input type="text" required class="wishInput coolInput flatpickr" placeholder="Select date..." name="date" id="bucketDate">
                     </div>
                 </div>
                 <div class="flashMessage" id="submitBucket">
                     {{get_flashed_messages(category_filter=["submit"])[0]}}
                 </div>
-                <button type="submit" class="btn"> Create n Add to List </button>
+                <span class="btn" onclick="submitForm()"> Create n Add to List </span>
             </form>
         </div>
         <div id="container">

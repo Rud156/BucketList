@@ -81,20 +81,36 @@ function displayAll(event) {
     displayModal.fadeIn();
 }
 
-$(function () {
-    $("#tags_tag").keypress(function (e) {
-        if (e.keyCode == 13) {
+function submitForm() {
+    var submit = true;
+    var bucketName = document.querySelector("#bucketName").value.trim();
+    var tagsName = hiddenTags.value.trim();
+    var bucketDate = document.querySelector("#bucketDate").value.trim();
+    var bucketImage = imageBtn.innerHTML.trim();
+    if (bucketName === "" || tagsName === "" || bucketDate === "" || bucketImage === "Click here to select image...")
+        submit = false;
+    if (submit)
+        document.querySelector("#bucketForm").submit();
+    else
+        submitBucket.innerHTML = "Please fill all the fields...";
+}
 
-            var tags = document.querySelectorAll("span.tag > span");
-            var resultString = "";
-            for (var i = 0; i < tags.length; i++) {
-                resultString += tags[i].childNodes[0].data;
-                resultString += "    ;";
-            }
-            hiddenTags.value = resultString;
-        }
+$(function () {
+    $("#tags_tag").keydown(function (e) {
+        if (e.keyCode == 13 || e.keyCode == 8)
+            setTimeout(addToInput, 100);
     });
 });
+
+function addToInput() {
+    var tags = document.querySelectorAll("span.tag > span");
+    var resultString = "";
+    for (var i = 0; i < tags.length; i++) {
+        resultString += tags[i].childNodes[0].data;
+        resultString += "    ;";
+    }
+    hiddenTags.value = resultString;
+}
 
 jQuery(function ($) {
     $('.matchheight').matchHeight();

@@ -13,6 +13,8 @@ app = Flask(__name__)
 client = MongoClient('localhost:27017')
 db = client.BucketList
 users = db.allUsers
+all_tags = db.allTags
+buckets = db.allBuckets
 file_system = GridFS(db)
 
 
@@ -26,16 +28,16 @@ def allowed_check(file_name):
 
 def get_wishes(user_name):
     login_user = users.find_one({'_id': user_name})
-    count = int(login_user['count'])
     session['count'] = login_user['count']
+    user_buckets = buckets.find({'user_name': session['username']})
     del values[:]
-    for i in range(0, count):
+    for data in user_buckets:
         data_set = {
-            'name': login_user[str(i)]['wish_name'],
-            'picture': login_user[str(i)]['wish_pic'],
-            'date': login_user[str(i)]['date'],
-            'tags': login_user[str(i)]['tags'],
-            'dateDiff': (datetime.strptime(login_user[str(i)]['date'], "%Y-%m-%d").date() - datetime.now().date()).days
+            'name': data['wish_name'],
+            'picture': data['wish_pic'],
+            'date': data['date'],
+            'tags': data['tags'],
+            'dateDiff': (datetime.strptime(data['date'], "%Y-%m-%d").date() - datetime.now().date()).days
         }
         values.append(data_set)
 
@@ -135,17 +137,27 @@ def submit_wish():
         object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
 
         data_set = {
+            'user_name': session['username'],
             'wish_name': request.form['wishName'],
             'wish_pic': file_name,
-            'objectId': object_id,
+            'objectId': str(object_id),
             'date': request.form['date'],
             'tags': tags
         }
 
         current_user = users.find_one({'_id': session['username']})
         count = int(current_user['count'])
-        users.update({'_id': session['username']}, {'$set': {str(count): data_set}}, upsert=True)
         users.update({'_id': session['username']}, {'$set': {'count': str(count + 1)}}, upsert=True)
+        buckets.insert_one(data_set)
+        for tag in tags:
+            print "Current Tag: " + tag
+            data = all_tags.find({'_id': tag})
+            count = data.count()
+            if count <= 0:
+                all_tags.update({'_id': tag}, {'$set': {'count': "1", "1": data_set}}, upsert=True)
+            else:
+                current_count = int(data[0]['count']) + 1
+                all_tags.update({'_id': tag}, {'$set': {'count': str(current_count), str(current_count): data_set}}, upsert=True)
 
     return redirect(url_for('index'))
 
