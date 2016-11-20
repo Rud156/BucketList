@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="../static/CSS/Style.css" />
-    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" />
+    <link rel="stylesheet" href="../static/CSS/Style_1.css" />
+    <link rel="stylesheet" href="../static/CSS/W3.css" />
+    <!--<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" />-->
     <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png" />
     <script src="../static/JS/jquery-2.2.3.js"></script>
     <script src="../static/JS/jquery.matchHeight.js"></script>
@@ -13,79 +14,82 @@
 
 <body>
     <nav>
-        <div id="navList">
-            <div class="left">
-                <h2 class="h2">
+        <div id="navList" class="w3-navbar w3-blue w3-card-8 w3-center">
+            <div class="w3-navitem w3-half matchheight" style="width: 50%; float: left">
+                <h2>
                     A place to share your dreams and wishes
                 </h2>
             </div>
-            <div class="right">
-                <ul class="ul">
-                    <li id="loginBtn" class="options"> Log In </li>
-                    <li id="signUpBtn" class="options"> Sign Up </li>
+            <div style="margin-right: 0" class="matchheight">
+                <ul class="w3-navbar" style="float: right; width: 40%; margin: 0 auto; margin-top: 20px;">
+                    <li id="loginBtn" class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red"> Log In </li>
+                    <li id="signUpBtn" class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px"> Sign Up </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div id="loginModal" class="modal">
-        <form class="modal-content" action="{{url_for('login')}}" method="POST">
-            <span class="close" id="loginClose">x</span>
+    <div id="loginModal" class="w3-modal">
+        <form class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large" action="{{url_for('login')}}" method="POST">
+            <span class="w3-closebtn" id="loginClose">&times;</span>
             <br> <br>
-            <input type="text" name="userName" placeholder="Enter username..." required class="coolInput" />
+            <input type="text" name="userName" placeholder="Enter username..." required class="w3-input" />
             <br>
-            <input type="password" name="passWord" placeholder="Enter password..." required class="coolInput" />
+            <input type="password" name="passWord" placeholder="Enter password..." required class="w3-input" />
             <br>
-            <div class="flashMessage" id="loginMessage">
+            <div class="w3-text-aqua w3-padding-16" id="loginMessage">
                 {{get_flashed_messages(category_filter=["login"])[0]}}
             </div>
             <br>
-            <button type="submit" class="btn"> Login In </button>
+            <button type="submit" class="w3-btn w3-orange w3-ripple w3-round"> Login In </button>
         </form>
     </div>
-    <div id="signUpModal" class="modal">
-        <form class="modal-content" action="{{url_for('register')}}" method="POST" enctype="multipart/form-data" id="registerForm">
-            <span class="close" id="signUpClose">x</span>
+    <div id="signUpModal" class="w3-modal">
+        <form class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large" action="{{url_for('register')}}" method="POST"
+            enctype="multipart/form-data" id="registerForm">
+            <span class="w3-closebtn" id="signUpClose">&times;</span>
             <br> <br>
-            <input type="text" name="userName" placeholder="Enter username..." required class="coolInput" />
+            <input type="text" name="userName" placeholder="Enter username..." required class="w3-input" />
             <br>
-            <input type="text" name="userQuote" placeholder="Enter your quote here..." required class="coolInput" />
+            <input type="text" name="userQuote" placeholder="Enter your quote here..." required class="w3-input" />
             <br>
-            <input type="text" readonly class="coolInput" style="margin-right: 10px" id="picName" />
-            <span class="coolInput" onclick="inputClick()"> 
+            <input type="text" readonly class="w3-input" id="picName" />
+            <span class="w3-btn w3-ripple w3-purple w3-round" onclick="inputClick()" style="margin: 10px 0"> 
                     Click here to select profile image...
                 </span>
             <input type="file" style="display: none" id="picSelect" name="file" accept="image/*" required onchange="displayName(files)">
             <br>
-            <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass" class="coolInput" />
+            <input type="password" name="passWord" placeholder="Enter password..." required id="firstPass" class="w3-input" />
             <br>
-            <input type="password" name="rePass" placeholder="Re-Enter password..." required id="secondPass" class="coolInput" />
+            <input type="password" name="rePass" placeholder="Re-Enter password..." required id="secondPass" class="w3-input" />
             <br>
-            <div class="flashMessage" id="flashMessage">
+            <div class="w3-text-aqua w3-padding-16" id="flashMessage">
                 {{get_flashed_messages(category_filter=["signup"])[0]}}
             </div>
             <br>
-            <span id="submitButton" class="btn" onclick="submitForm()"> Sign Up </span>
+            <span id="submitButton" class="w3-btn w3-orange w3-ripple w3-round" onclick="submitForm()"> Sign Up </span>
         </form>
     </div>
-    <div id="container">
-        <div id="aboutUs">
-            <h3>
-                We take care of the crazy stuff so you can pour you heart into your words and tell it to the world.
-            </h3>
+    <div id="container" class="w3-center w3-yellow">
+        <div id="aboutUs" class="w3-center" style="min-height: 300px; padding-top: 75px">
+            <h1 class="w3-text-shadow w3-text-deep-orange">
+                <strong>
+                    We take care of the crazy stuff so you can pour you heart into your words and tell it to the world.
+                </strong>
+            </h1>
         </div>
-        <div id="feedId">
-            Here are some popular lists to inspire you to wish more and make them come true...
+        <div id="feedId" class="w3-card-4 w3-purple w3-left w3-round" style="width: 100%">
+            <h2> Here are some popular lists to inspire you to wish more and make them come true... </h2>
         </div>
         <div id="popularFeeds">
             <div id="itemCount" style="display: none">{{valueCount}}</div>
-            <div id="emptyMessage" style="display: none">
-                <img src="../static/Images/EmptyToDo.jpg" />
-                <br> <br> There's nothing to show right now. I'm sorry but we just started...
+            <div id="emptyMessage" style="margin-top: 20px; clear: both; display: none" class="w3-container w3-padding-16">
+                <img src="../static/Images/EmptyToDo.jpg" class="w3-round-large" />
+                <br> <br> <span class="w3-text-red w3-xlarge w3-text-shadow"> There's nothing to show right now. I'm sorry but we just started...</span>
             </div>
-            <div id="feedHolder">
+            <div id="feedHolder" class="w3-container">
                 {% for i in range(0, valueCount|int) %} {% if i % 3 == 0 %}
-                <div class="col span" style="height: 425px; margin: 1% 0;">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" />
+                <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 425px; margin: 1% 0;">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" class="w3-card-8 w3-round-large" width="100%"/>
                     <h1 style="padding: 0; margin: 10px 0">
                         {{result[i]['userName']}}
                     </h1>
@@ -101,8 +105,8 @@
                     </span>
                 </div>
                 {% else %}
-                <div class="col span" style="height: 425px;">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" />
+                <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 425px; margin: 1% 0;">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" class="w3-card-8 w3-round-large" width="100%"/>
                     <h1 style="padding: 0; margin: 10px 0">
                         {{result[i]['userName']}}
                     </h1>
@@ -120,24 +124,24 @@
                 {% endif %} {% endfor %}
             </div>
         </div>
-        <div class="footer">
-            <div class="left">
-                <span class="endFooter"> Connect With Us: </span>
-                <ul class="ul" style="float: none">
+        <div class="w3-container w3-card-8">
+            <div class="w3-half w3-round w3-sand matchheight">
+                <span class="w3-xlarge w3-padding-16" style="display: block"> Connect With Us: </span>
+                <ul class="w3-ul w3-large" style="float: none">
                     <li class="link"> Lorem Ipsum </li>
                     <li class="link"> Lorem Ipsum </li>
                     <li class="link"> Lorem Ipsum </li>
                 </ul>
             </div>
-            <div class="right">
-                <span class="endFooter"> About Us: </span>
-                <br>
-                <span class="endFooter" style="color: purple">
+            <div class="w3-half w3-round w3-sand matchheight">
+                <span class="w3-xlarge w3-text-shadow w3-text-deep-purple"> About Us: </span>
+                <br> <br>
+                <span class="w3-xlarge w3-text-shadow w3-text-amber" style="color: purple">
                         We just want to make a way for you to remember your wishes and let others know about it as well.
                     </span>
             </div>
         </div>
-        <div class="footer" id="footer">
+        <div class="w3-container w3-grey w3-large w3-padding-8" id="footer">
             Made and Designed by Rudrangshu Nandi
         </div>
     </div>

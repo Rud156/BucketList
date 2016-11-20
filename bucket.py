@@ -7,7 +7,7 @@ from random import sample
 import bcrypt
 
 
-allowed_extensions = ('png', 'jpg', 'gif', 'jpeg')
+allowed_extensions = ('png', 'jpg', 'gif', 'jpeg', 'JPG')
 values = []
 
 app = Flask(__name__)
@@ -59,7 +59,8 @@ def get_wishes(get_users):
                 'date': results[count[i]]['date'],
                 'tags': results[count[i]]['tags'],
                 'userName': results[count[i]]['user_name'],
-                'dateDiff': (datetime.strptime(results[count[i]]['date'], "%Y-%m-%d").date() - datetime.now().date()).days
+                'dateDiff': (datetime.strptime(results[count[i]]['date'], "%Y-%m-%d").date()
+                             - datetime.now().date()).days
             }
             values.append(data_set)
 
