@@ -40,3 +40,6 @@ input:-ms-input-placeholder{
 span.tag{
     border-radius: 20% !important;
 }
+body, div, nav, li, button, span, h1, h2, h3{
+    font-family: 'Lobster', cursive !important;
+}
