@@ -84,7 +84,7 @@
             </div>
             <div id="feedHolder">
                 {% for i in range(0, valueCount|int) %} {% if i % 3 == 0 %}
-                <div class="col span" style="height: 425px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
+                <div class="col span" style="height: 425px; margin: 1% 0;">
                     <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" />
                     <h1 style="padding: 0; margin: 10px 0">
                         {{result[i]['userName']}}
@@ -101,7 +101,7 @@
                     </span>
                 </div>
                 {% else %}
-                <div class="col span" style="height: 425px; cursor: pointer" onclick="displayAll(event)">
+                <div class="col span" style="height: 425px;">
                     <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" />
                     <h1 style="padding: 0; margin: 10px 0">
                         {{result[i]['userName']}}
