@@ -43,7 +43,6 @@ def get_wishes(get_users):
             }
             values.append(data_set)
     else:
-        print "Getting all data"
         results = buckets.find()
         del values[:]
         count = results.count()
@@ -92,7 +91,7 @@ def login():
 
         message = Markup("Invalid username or password...")
         flash(message, category='login')
-        return render_template('index.html')
+        return redirect(url_for('index'))
 
     else:
         return redirect(url_for('index'))
