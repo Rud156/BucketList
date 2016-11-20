@@ -77,29 +77,47 @@
             Here are some popular lists to inspire you to wish more and make them come true...
         </div>
         <div id="popularFeeds">
+            <div id="itemCount" style="display: none">{{valueCount}}</div>
+            <div id="emptyMessage" style="display: none">
+                <img src="../static/Images/EmptyToDo.jpg" />
+                <br> <br> There's nothing to show right now. I'm sorry but we just started...
+            </div>
             <div id="feedHolder">
-                <div class="section group">
-                    <div class="col span matchheight">
-                        <img src="../static/Images/DefaultImage.jpg" width="100%" /> Put Some Content Here
+                {% for i in range(0, valueCount|int) %} {% if i % 3 == 0 %}
+                <div class="col span" style="height: 425px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" />
+                    <h1 style="padding: 0; margin: 10px 0">
+                        {{result[i]['userName']}}
+                    </h1>
+                    <span style="font-size: 2em; color: purple">{{result[i]['name']}}</span>
+                    <div style="margin: 10px 0">
+                        {{result[i]['date']}}
                     </div>
-                    <div class="col span matchheight">
-                        <img src="../static/Images/DefaultImage.jpg" width="100%" /> Put Some Content Here
+                    <div class="hidden">
+                        {{result[i]['tags']}}
                     </div>
-                    <div class="col span matchheight">
-                        <img src="../static/Images/DefaultImage.jpg" width="100%" /> Put Some Content Here
-                    </div>
+                    <span class="hidden">
+                                    {{result[i]['dateDiff']}}
+                    </span>
                 </div>
-                <div class="section group">
-                    <div class="col span matchheight">
-                        <img src="../static/Images/DefaultImage.jpg" width="100%" /> Put Some Content Here
+                {% else %}
+                <div class="col span" style="height: 425px; cursor: pointer" onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" />
+                    <h1 style="padding: 0; margin: 10px 0">
+                        {{result[i]['userName']}}
+                    </h1>
+                    <span style="font-size: 2em; color: purple">{{result[i]['name']}}</span>
+                    <div style="margin: 10px 0">
+                        {{result[i]['date']}}
                     </div>
-                    <div class="col span matchheight">
-                        <img src="../static/Images/DefaultImage.jpg" width="100%" /> Put Some Content Here
+                    <div class="hidden">
+                        {{result[i]['tags']}}
                     </div>
-                    <div class="col span matchheight">
-                        <img src="../static/Images/DefaultImage.jpg" width="100%" /> Put Some Content Here.
-                    </div>
+                    <span class="hidden">
+                                    {{result[i]['dateDiff']}}
+                    </span>
                 </div>
+                {% endif %} {% endfor %}
             </div>
         </div>
         <div class="footer">
@@ -143,6 +161,10 @@
                 else
                     document.querySelector("#flashMessage").innerHTML = "Please fill all fields...";
             }
+            var element = document.querySelector("#itemCount");
+            var messageBox = document.querySelector("#emptyMessage");
+            if (parseInt(element.innerHTML) === 0)
+                messageBox.style.display = "block";
     </script>
     <script>
         jQuery(function($){

@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from gridfs import GridFS
 from datetime import datetime
+from random import sample
 import bcrypt
 
 
@@ -26,30 +27,53 @@ def allowed_check(file_name):
         return False
 
 
-def get_wishes(user_name):
-    login_user = users.find_one({'_id': user_name})
-    session['count'] = login_user['count']
-    user_buckets = buckets.find({'user_name': session['username']})
-    del values[:]
-    for data in user_buckets:
-        data_set = {
-            'name': data['wish_name'],
-            'picture': data['wish_pic'],
-            'date': data['date'],
-            'tags': data['tags'],
-            'dateDiff': (datetime.strptime(data['date'], "%Y-%m-%d").date() - datetime.now().date()).days
-        }
-        values.append(data_set)
+def get_wishes(get_users):
+    if get_users:
+        login_user = users.find_one({'_id': session['username']})
+        session['count'] = login_user['count']
+        user_buckets = buckets.find({'user_name': session['username']})
+        del values[:]
+        for data in user_buckets:
+            data_set = {
+                'name': data['wish_name'],
+                'picture': data['wish_pic'],
+                'date': data['date'],
+                'tags': data['tags'],
+                'dateDiff': (datetime.strptime(data['date'], "%Y-%m-%d").date() - datetime.now().date()).days
+            }
+            values.append(data_set)
+    else:
+        print "Getting all data"
+        results = buckets.find()
+        del values[:]
+        count = results.count()
+        if count == 0:
+            return
+        if count > 6:
+            count = 6
+        whole_numbers = range(0, count)
+        count = sample(whole_numbers, count)
+        for i in range(0, len(count)):
+            data_set = {
+                'name': results[count[i]]['wish_name'],
+                'picture': results[count[i]]['wish_pic'],
+                'date': results[count[i]]['date'],
+                'tags': results[count[i]]['tags'],
+                'userName': results[count[i]]['user_name'],
+                'dateDiff': (datetime.strptime(results[count[i]]['date'], "%Y-%m-%d").date() - datetime.now().date()).days
+            }
+            values.append(data_set)
 
 
 @app.route('/')
 def index():
     if 'username' in session:
-        get_wishes(session['username'])
+        get_wishes(True)
         return render_template('dashboard.html', result=values)
 
     else:
-        return render_template('index.html')
+        get_wishes(False)
+        return render_template('index.html', result=values, valueCount=len(values))
 
 
 @app.route('/login', methods=['POST', 'GET'])
