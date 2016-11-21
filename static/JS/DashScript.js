@@ -1,5 +1,3 @@
-
-
 var element = document.querySelector("#itemCount");
 var messageBox = document.querySelector("#emptyMessage");
 var imageBtn = document.querySelector("#inputActivator");
@@ -14,18 +12,23 @@ var submitBucket = document.querySelector("#submitBucket");
 var hiddenTags = document.querySelector('#hiddenTags');
 var container = $("#container");
 
+var name = null;
+var imageSrc = null;
+var tags = null;
+var dateReq = null;
+
 if (parseInt(element.innerHTML) === 0) {
     messageBox.style.display = "block";
 }
-if (submitBucket.innerHTML.trim() !== "")
+if (submitBucket.innerHTML.trim() !== ""){
+    editBucket(false);
     modal_1.fadeIn();
+}
 
 $(document).ready(function () {
-    $('.matchheight').matchHeight();
     setTimeout(setPadding, 501);
 });
 $(window).resize(function () {
-    $('.matchheight').matchHeight();
     setTimeout(setPadding, 501);
 });
 
@@ -33,9 +36,11 @@ $(window).resize(function () {
 function setPadding() {
     var padding = $("nav.w3-navbar").outerHeight(true);
     container.css("padding-top", padding + "px");
+    $('.matchheight').matchHeight();
 }
 
 btn_1.onclick = function () {
+    editBucket(false);
     modal_1.fadeIn();
 }
 span_1.onclick = function () {
@@ -74,10 +79,10 @@ function displayAll(event) {
     else
         child = event.target.parentNode.childNodes;
 
-    var name = child[2].data.trim();
-    var imageSrc = child[1].src;
-    var dateReq = child[3].innerHTML.trim();
-    var tags = child[5].innerHTML;
+    name = child[2].data.trim();
+    imageSrc = child[1].src;
+    dateReq = child[3].innerHTML.trim();
+    tags = child[5].innerHTML.trim();
     var dateDiff = child[7].innerHTML.trim();
 
     var image = document.querySelector("#displayModal > form > div > div > img");
@@ -86,7 +91,7 @@ function displayAll(event) {
     document.querySelector("#Date").innerHTML = dateReq;
     var result = null;
     if (parseInt(dateDiff) > 0)
-        result = dateDiff + " days till exipry.";
+        result = dateDiff + " day(s) till exipry.";
     else if (parseInt(dateDiff) < 0)
         result = "Expired " + Math.abs(dateDiff) + " days ago.";
     else
@@ -108,6 +113,53 @@ function submitForm() {
         document.querySelector("#bucketForm").submit();
     else
         submitBucket.innerHTML = "Please fill all the fields...";
+}
+
+function editBucket(value) {
+    if (value) {
+        document.querySelector("#submitBUtton").innerHTML = "Save Bucket";
+        document.querySelector("#bucketName").value = name;
+        document.getElementsByName('update')[0].value = "1";
+        document.getElementsByName('oldValue')[0].value = name;
+
+        var imageName = imageSrc.split('/');
+        document.querySelector("#bucketImage").innerHTML = imageName[4];
+        document.querySelector("#bucketImage").removeAttribute("onclick");
+        document.querySelector("#bucketImage").className = "w3-btn w3-ripple w3-round w3-hover-red w3-orange w3-disabled";
+
+        document.querySelector("#imageInput").removeAttribute("required");
+
+        
+        var tagsArray = tags.replace(/ u'/g, '');
+        tagsArray = tagsArray.replace(/'/g, '');
+        tagsArray = tagsArray.replace(/u/i, '');
+        tagsArray = tagsArray.replace(/]/i, '');
+        tagsArray = tagsArray.replace(/\[/i, '');
+        tagsArray = tagsArray.split(',');
+        var resultString = "";
+        for (var i = 0; i < tagsArray.length; i++) {
+            $("#tags").addTag(tagsArray[i]);
+            resultString += tagsArray[i];
+            if (i !== tags.length - 1)
+                resultString += "    ;";
+        }
+
+        document.querySelector("#bucketDate").value = dateReq;
+        modal_1.fadeIn();
+    }
+    else{
+        document.querySelector("#submitBUtton").innerHTML = "Add Bucket";
+        document.querySelector("#bucketName").value = "";
+        document.querySelector("#bucketDate").value = "";
+        document.querySelector("#bucketImage").innerHTML = "Click here to select image...";
+        document.querySelector("#bucketImage").setAttribute("onclick", "inputClick()");
+        document.querySelector("#bucketImage").className = "w3-btn w3-ripple w3-round w3-hover-red w3-orange";
+        document.querySelector("#imageInput").setAttribute("required", "required");
+        document.getElementsByName('update')[0].value = "0";
+
+        $("#tags").importTags('');
+    }
+
 }
 
 $(function () {

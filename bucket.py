@@ -27,7 +27,7 @@ def allowed_check(file_name):
         return False
 
 
-def get_wishes(get_users):
+def get_buckets(get_users):
     if get_users:
         login_user = users.find_one({'_id': session['username']})
         session['count'] = login_user['count']
@@ -68,11 +68,11 @@ def get_wishes(get_users):
 @app.route('/')
 def index():
     if 'username' in session:
-        get_wishes(True)
+        get_buckets(True)
         return render_template('dashboard.html', result=values)
 
     else:
-        get_wishes(False)
+        get_buckets(False)
         return render_template('index.html', result=values, valueCount=len(values))
 
 

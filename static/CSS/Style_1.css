@@ -41,7 +41,7 @@ span.tag{
     border-radius: 20% !important;
 }
 body, div, nav, li, button, span, h1, h2, h3{
-    font-family: 'Lobster', cursive !important;
+    font-family: 'Lobster','Times New Roman', Times, serif, monospace !important;
     transition-duration: 0.5s !important;
 }
 #navList{
