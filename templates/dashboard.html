@@ -17,15 +17,15 @@
 </head>
 
 <body>
-    <nav>
-        <div id="navList" class="w3-navbar w3-blue w3-card-8 w3-center">
-            <div class="w3-navitem w3-half matchheight" style="width: 50%; float: left">
-                <h2>
+    <nav class="w3-navbar w3-top">
+        <div id="navList" class="w3-blue w3-card-8 w3-center">
+            <div class="w3-half matchheight" style="float: left">
+                <h2 class="w3-xlarge">
                     Welcome {{session['username']}}
                 </h2>
             </div>
-            <div class="matchheight" style="margin-right: 0">
-                <ul class="w3-navbar" style="float: right; width: 40%; margin: 0 auto; margin-top: 20px;">
+            <div class="w3-half matchheight">
+                <ul class="w3-navbar" style="margin: 10px auto;">
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="createBtn"> Create New Bucket List</li>
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px" id="logOut" onclick="invisibleClick()"> Log Out
                         <form action="{{url_for('logout')}}" method="POST">

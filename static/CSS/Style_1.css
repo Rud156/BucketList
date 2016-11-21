@@ -8,7 +8,7 @@ input::-moz-placeholder{
     color: black !important;
 }
 input:-ms-input-placeholder{
-    color: #ffcc66 !important;
+    color: black !important;
 }
 .hidden{
     display: none;
@@ -22,7 +22,7 @@ input:-ms-input-placeholder{
 #tags_tagsinput{
     overflow: auto !important;
     margin: 0 25px !important;
-    height: 45px !important;
+    max-height: 45px !important;
     width: auto !important;
     min-height: auto !important;
     cursor: pointer;
@@ -42,4 +42,15 @@ span.tag{
 }
 body, div, nav, li, button, span, h1, h2, h3{
     font-family: 'Lobster', cursive !important;
+    transition-duration: 0.5s !important;
+}
+#navList{
+    overflow: auto;
+}
+
+@media only screen and (max-width: 601px){
+    #signUpBtn, #logOut{
+        margin-left: 0 !important;
+        margin-top: 20px;
+    }
 }

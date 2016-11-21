@@ -13,15 +13,15 @@
 </head>
 
 <body>
-    <nav>
-        <div id="navList" class="w3-navbar w3-blue w3-card-8 w3-center">
-            <div class="w3-navitem w3-half matchheight" style="width: 50%; float: left">
-                <h2>
+    <nav class="w3-navbar w3-top">
+        <div id="navList" class="w3-blue w3-card-8 w3-center">
+            <div class="w3-navitem w3-half matchheight" style="float: left">
+                <h2 class="w3-xlarge">
                     A place to share your dreams and wishes
                 </h2>
             </div>
-            <div style="margin-right: 0" class="matchheight">
-                <ul class="w3-navbar" style="float: right; width: 40%; margin: 0 auto; margin-top: 20px;">
+            <div style="margin-right: 0" class="w3-half matchheight">
+                <ul class="w3-navbar" style="margin: 10px auto;">
                     <li id="loginBtn" class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red"> Log In </li>
                     <li id="signUpBtn" class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px"> Sign Up </li>
                 </ul>
@@ -125,7 +125,7 @@
             </div>
         </div>
         <div class="w3-container w3-card-8">
-            <div class="w3-half w3-round w3-sand matchheight">
+            <div class="w3-half w3-round-large w3-sand matchheight">
                 <span class="w3-xlarge w3-padding-16" style="display: block"> Connect With Us: </span>
                 <ul class="w3-ul w3-large" style="float: none">
                     <li class="link"> Lorem Ipsum </li>
@@ -133,7 +133,7 @@
                     <li class="link"> Lorem Ipsum </li>
                 </ul>
             </div>
-            <div class="w3-half w3-round w3-sand matchheight">
+            <div class="w3-half w3-round-large w3-sand matchheight">
                 <span class="w3-xlarge w3-text-shadow w3-text-deep-purple"> About Us: </span>
                 <br> <br>
                 <span class="w3-xlarge w3-text-shadow w3-text-amber" style="color: purple">
@@ -165,6 +165,7 @@
                 else
                     document.querySelector("#flashMessage").innerHTML = "Please fill all fields...";
             }
+
             var element = document.querySelector("#itemCount");
             var messageBox = document.querySelector("#emptyMessage");
             if (parseInt(element.innerHTML) === 0)
@@ -249,6 +250,19 @@
 				}
 			});
 	</script>
+    <script>
+        var container = $("#container");
+        $(document).ready(function(){
+            setTimeout(setPadding, 501);
+        });
+        $(window).resize(function(){
+            setTimeout(setPadding, 501);
+        });
+        function setPadding(){
+            var padding = $("nav.w3-navbar").outerHeight(true);
+            container.css("padding-top", padding + "px");
+        }
+    </script>
 </body>
 
 </html>

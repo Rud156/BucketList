@@ -12,6 +12,7 @@ var displayModal = $("#displayModal");
 var closeModal = document.querySelector("#displayClose");
 var submitBucket = document.querySelector("#submitBucket");
 var hiddenTags = document.querySelector('#hiddenTags');
+var container = $("#container");
 
 if (parseInt(element.innerHTML) === 0) {
     messageBox.style.display = "block";
@@ -19,6 +20,20 @@ if (parseInt(element.innerHTML) === 0) {
 if (submitBucket.innerHTML.trim() !== "")
     modal_1.fadeIn();
 
+$(document).ready(function () {
+    $('.matchheight').matchHeight();
+    setTimeout(setPadding, 501);
+});
+$(window).resize(function () {
+    $('.matchheight').matchHeight();
+    setTimeout(setPadding, 501);
+});
+
+
+function setPadding() {
+    var padding = $("nav.w3-navbar").outerHeight(true);
+    container.css("padding-top", padding + "px");
+}
 
 btn_1.onclick = function () {
     modal_1.fadeIn();
@@ -112,7 +127,3 @@ function addToInput() {
     }
     hiddenTags.value = resultString;
 }
-
-jQuery(function ($) {
-    $('.matchheight').matchHeight();
-});
