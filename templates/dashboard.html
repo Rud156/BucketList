@@ -27,7 +27,8 @@
             <div class="w3-half matchheight">
                 <ul class="w3-navbar" style="margin: 10px auto;">
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="createBtn"> Create New Bucket List</li>
-                    <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px" id="logOut" onclick="invisibleClick()"> Log Out
+                    <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px" id="logOut" onclick="invisibleClick()">
+                    Log Out
                         <form action="{{url_for('logout')}}" method="POST">
                             <button style="display: none" id="emptyButton"> </button>
                         </form>
@@ -61,12 +62,13 @@
         </form>
     </div>
     <div id="createModal" class="w3-modal">
-        <form class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large" method="POST" action="{{url_for('submit_wish')}}" enctype="multipart/form-data" id="bucketForm">
+        <form class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large" method="POST" action="{{url_for('submit_wish')}}"
+            enctype="multipart/form-data" id="bucketForm">
             <span class="w3-closebtn" id="createClose">&times;</span>
             <br> <br>
-            <input type="text" style="display: none" name="update"/>
-            <input type="text" style="display: none" name="oldValue"/>
-            <input type="text" style="display: none" name="old_tags"/>
+            <input type="text" style="display: none" name="update" />
+            <input type="text" style="display: none" name="oldValue" />
+            <input type="text" style="display: none" name="old_tags" />
             <div class="w3-row w3-padding-16">
                 <div class="w3-half matchheight">
                     Put your wish into the box:
@@ -100,7 +102,7 @@
                     Put a date you would like to complete it by:
                 </div>
                 <div class="w3-half w3-center matchheight">
-                    <input type="text" required class="wishInput coolInput flatpickr" placeholder="Select date..." name="date" id="bucketDate">
+                    <input type="text" required class="w3-input flatpickr" placeholder="Select date..." name="date" id="bucketDate">
                 </div>
             </div>
             <div class="w3-text-indigo w3-large w3-padding-16" id="submitBucket">
@@ -111,7 +113,8 @@
     </div>
     <div id="container" class="w3-center w3-aqua">
         <div id="userPic">
-            <img src="http://localhost:5000/images/{{session['picture']}}" width="250px" class="w3-card-16 w3-round-large" style="margin-top: 20px"/>
+            <img src="http://localhost:5000/images/{{session['picture']}}" width="250px" class="w3-card-16 w3-round-large" style="margin-top: 20px"
+            />
             <br>
             <div class="w3-xlarge w3-padding-8"> {{session['username']}} </div>
             <div class="w3-xlarge w3-padding-8"> {{session['quote']}} </div>
@@ -131,7 +134,7 @@
             <div id="buckets" class="w3-container">
                 {% for i in range(0, session['count']|int) %} {% if i % 3 == 0 %}
                 <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8"/> {{result[i]['name']}}
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8" />                    {{result[i]['name']}}
                     <span class="hidden">
                                     {{result[i]['date']}}
                                 </span>
@@ -144,7 +147,7 @@
                 </div>
                 {% else %}
                 <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8" /> {{result[i]['name']}}
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8" />                    {{result[i]['name']}}
                     <span class="hidden">
                                     {{result[i]['date']}}
                                 </span>

@@ -1,15 +1,3 @@
-input::-webkit-input-placeholder{
-    color: black !important;
-}
-input:-moz-placeholder{
-    color: black !important;
-}
-input::-moz-placeholder{
-    color: black !important;
-}
-input:-ms-input-placeholder{
-    color: black !important;
-}
 .hidden{
     display: none;
 }
@@ -28,7 +16,8 @@ input:-ms-input-placeholder{
     width: initial !important;
 }
 #tags_tag{
-    font-family: 'Lobster', cursive;
+    font-family: 'Lobster','Times New Roman', Times, serif, monospace !important;
+    color: gray !important;
     height: auto !important;
     width: auto !important;
     font-size: 0.8em;
@@ -44,7 +33,7 @@ body, div, nav, li, button, span, h1, h2, h3{
     overflow: auto;
 }
 .w3-modal{
-    padding-top: 50px !important;
+    padding-top: 40px !important;
 }
 
 @media only screen and (max-width: 601px){
