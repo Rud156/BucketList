@@ -197,7 +197,7 @@ def submit_wish():
             hash_obj = hash_obj.hexdigest()
             old_hash = sha512(session['username'].lower() + request.form['oldValue'].lower())
             old_hash = old_hash.hexdigest()
-            existing_bucket = buckets.find_one({'_id': hash_obj})
+            existing_bucket = buckets.find_one({'hash_obj': hash_obj})
 
             if existing_bucket is None:
                 buckets.update({'hash_obj': old_hash}, {'$set': {'wish_name': request.form['wishName'],

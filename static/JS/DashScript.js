@@ -151,16 +151,14 @@ function editBucket(value) {
         tagsArray = tagsArray.replace(/]/i, '');
         tagsArray = tagsArray.replace(/\[/i, '');
         tagsArray = tagsArray.split(',');
+        $("#tags").importTags('');
         var resultString = "";
         for (var i = 0; i < tagsArray.length; i++) {
             $("#tags").addTag(tagsArray[i]);
             resultString += tagsArray[i];
-            if (i !== tagsArray.length - 1){
-                console.log("Loop Called");
+            if (i !== tagsArray.length - 1)
                 resultString += "    ;";
-            }
         }
-        hiddenTags.value = resultString;
         document.getElementsByName('old_tags')[0].value = resultString;
 
         document.querySelector("#bucketDate").value = dateReq;
