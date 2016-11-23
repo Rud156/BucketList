@@ -1,14 +1,13 @@
 from datetime import datetime
 from random import sample
-
-import hashlib
-import bcrypt
+from hashlib import sha512
+from bcrypt import hashpw, gensalt
 from flask import Flask, render_template, url_for, request, session, redirect, flash, Markup, make_response
 from gridfs import GridFS
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 
-allowed_extensions = ('png', 'jpg', 'gif', 'jpeg', 'JPG')
+allowed_extensions = ('png', 'jpg', 'gif', 'jpeg')
 values = []
 
 app = Flask(__name__)
@@ -22,7 +21,7 @@ file_system = GridFS(db)
 
 def allowed_check(file_name):
     file_type = file_name.split(".")
-    if file_type[1] in allowed_extensions:
+    if file_type[1].lower() in allowed_extensions:
         return True
     else:
         return False
@@ -83,7 +82,7 @@ def login():
         login_user = users.find_one({'_id': request.form['userName'].lower()})
 
         if login_user is not None:
-            if bcrypt.hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
+            if hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
                     login_user['password'].encode('utf-8'):
                 session['username'] = request.form['userName'].capitalize()
                 session['picture'] = login_user['pictureName']
@@ -105,7 +104,7 @@ def register():
         existing_user = users.find_one({'_id': request.form['userName'].lower()})
 
         if existing_user is None:
-            hash_pass = bcrypt.hashpw(request.form['passWord'].encode('utf-8'), bcrypt.gensalt())
+            hash_pass = hashpw(request.form['passWord'].encode('utf-8'), gensalt())
             # noinspection PyShadowingNames
             file_image = request.files['file']
             result = allowed_check(file_image.filename)
@@ -158,12 +157,12 @@ def submit_wish():
                 flash(message, category='submit')
                 return redirect(url_for('index'))
 
-            file_name = secure_filename(file_image.filename)
-            object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
-
-            hash_obj = hashlib.sha512(session['username'].lower() + request.form['wishName'].lower())
+            hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
             hash_obj = hash_obj.hexdigest()
             existing_bucket = buckets.find_one({'hash_obj': hash_obj})
+
+            file_name = secure_filename(file_image.filename)
+            object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
 
             if existing_bucket is None:
                 data_set = {
@@ -194,9 +193,9 @@ def submit_wish():
             old_tags = request.form['old_tags']
             old_tags = old_tags.split('    ;')
 
-            hash_obj = hashlib.sha512(session['username'].lower() + request.form['wishName'].lower())
+            hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
             hash_obj = hash_obj.hexdigest()
-            old_hash = hashlib.sha512(session['username'].lower() + request.form['oldValue'].lower())
+            old_hash = sha512(session['username'].lower() + request.form['oldValue'].lower())
             old_hash = old_hash.hexdigest()
             existing_bucket = buckets.find_one({'_id': hash_obj})
 
