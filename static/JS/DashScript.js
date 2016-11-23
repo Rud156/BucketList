@@ -20,7 +20,8 @@ var dateReq = null;
 
 flatpickr(".flatpickr");
 $('#tags').tagsInput({
-    'onChange': addToInput
+    'onChange': addToInput,
+    'height': '45px'
 });
 
 if (parseInt(element.innerHTML) === 0) {

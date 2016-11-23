@@ -20,11 +20,7 @@ input:-ms-input-placeholder{
     width: 0;
 }
 #tags_tagsinput{
-    overflow: auto !important;
-    margin: 0 25px !important;
-    max-height: 45px !important;
     width: auto !important;
-    min-height: auto !important;
     cursor: pointer;
     border: none;
 }
