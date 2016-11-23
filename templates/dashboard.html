@@ -28,7 +28,7 @@
                 <ul class="w3-navbar" style="margin: 10px auto;">
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="createBtn"> Create New Bucket List</li>
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px" id="logOut" onclick="invisibleClick()">
-                    Log Out
+                        Log Out
                         <form action="{{url_for('logout')}}" method="POST">
                             <button style="display: none" id="emptyButton"> </button>
                         </form>
@@ -38,7 +38,7 @@
         </div>
     </nav>
     <div id="displayModal" class="w3-modal">
-        <form class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large">
+        <div class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large">
             <span class="w3-closebtn" id="displayClose">&times;</span>
             <br> <br>
             <div class="w3-row">
@@ -56,10 +56,13 @@
                     <span class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black" onclick="editBucket(true)"> Edit Bucket </span>
                 </div>
                 <div class="w3-half matchHeight">
-                    <button type="submit" class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black"> Mark as Complete </button>
+                    <form method="POST" action="{{url_for('complete')}}" id="completeForm">
+                        <input type="text" name="complete" style="display: none" />
+                        <span class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black" id="completeBtn"> Mark as Complete </span>
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
     <div id="createModal" class="w3-modal">
         <form class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large" method="POST" action="{{url_for('submit_wish')}}"
@@ -133,30 +136,36 @@
             </div>
             <div id="buckets" class="w3-container">
                 {% for i in range(0, session['count']|int) %} {% if i % 3 == 0 %}
-                <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8" />                    {{result[i]['name']}}
+                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8 w3-margin-bottom" />                    {{result[i]['name']}}
                     <span class="hidden">
-                                    {{result[i]['date']}}
-                                </span>
+                        {{result[i]['date']}}
+                    </span>
                     <span class="hidden">
-                                    {{result[i]['tags']}}
-                                </span>
+                        {{result[i]['tags']}}
+                    </span>
                     <span class="hidden">
-                                    {{result[i]['dateDiff']}}
-                                </span>
+                        {{result[i]['dateDiff']}}
+                    </span>
+                    <span class="hidden">
+                        {{result[i]['complete']}}
+                    </span>
                 </div>
                 {% else %}
-                <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8" />                    {{result[i]['name']}}
+                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large" style="height: 300px; margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8 w3-margin-bottom" />                    {{result[i]['name']}}
                     <span class="hidden">
-                                    {{result[i]['date']}}
-                                </span>
+                        {{result[i]['date']}}
+                    </span>
                     <span class="hidden">
-                                    {{result[i]['tags']}}
-                                </span>
+                        {{result[i]['tags']}}
+                    </span>
                     <span class="hidden">
-                                    {{result[i]['dateDiff']}}
-                                </span>
+                        {{result[i]['dateDiff']}}
+                    </span>
+                    <span class="hidden">
+                        {{result[i]['complete']}}
+                    </span>
                 </div>
                 {% endif %} {% endfor %}
             </div>

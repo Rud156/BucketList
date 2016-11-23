@@ -33,6 +33,7 @@ if (submitBucket.innerHTML.trim() !== "") {
 }
 
 $(document).ready(function () {
+    changeColor();
     setTimeout(setPadding, 501);
 });
 $(window).resize(function () {
@@ -78,6 +79,9 @@ function inputClick() {
 function invisibleClick() {
     logoutBtn.click();
 }
+function submitComplete(){
+    document.querySelector("#completeForm").submit();
+}
 
 function displayAll(event) {
     var child = null;
@@ -92,7 +96,17 @@ function displayAll(event) {
     tags = child[5].innerHTML.trim();
     var dateDiff = child[7].innerHTML.trim();
 
-    var image = document.querySelector("#displayModal > form > div > div > img");
+    var complete = child[9].innerHTML.trim();
+    document.getElementsByName('complete')[0].value = name;
+    if(complete === "T")
+        document.querySelector("#completeBtn").className = "w3-btn w3-ripple w3-orange w3-round-large w3-hover-black w3-disabled";
+    else{
+        document.querySelector("#completeBtn").className = "w3-btn w3-ripple w3-orange w3-round-large w3-hover-black";
+        document.querySelector("#completeBtn").setAttribute("onclick", "submitComplete()");
+    }
+
+
+    var image = document.querySelector("#displayModal > div > div > div > img");
     image.src = imageSrc;
     document.querySelector("#Name").innerHTML = name;
     document.querySelector("#Date").innerHTML = dateReq;
@@ -178,7 +192,6 @@ function editBucket(value) {
 
         $("#tags").importTags('');
     }
-
 }
 
 function addToInput() {
@@ -190,4 +203,24 @@ function addToInput() {
             resultString += "    ;";
     }
     hiddenTags.value = resultString;
+}
+
+function changeColor(){
+    var allDivs = document.querySelectorAll("#buckets > div");
+    for(var i = 0; i < allDivs.length; i++){
+        var complete = allDivs[i].childNodes[9].innerHTML.trim();
+
+        var dateDiff = allDivs[i].childNodes[7].innerHTML.trim();
+        dateDiff = parseInt(dateDiff);
+
+        if(complete === "T")
+            allDivs[i].className = "w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large w3-light-green";
+        else{
+            if(dateDiff < 0 && complete === "F")
+                allDivs[i].className = "w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large w3-red";
+            else if(dateDiff > 0 && complete ===  "F")
+                allDivs[i].className = "w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large w3-yellow";
+
+        }
+    }
 }

@@ -35,11 +35,12 @@ def get_buckets(get_users):
         del values[:]
         for data in user_buckets:
             data_set = {
-                'name': data['wish_name'],
+                'name': data['wish_name'].capitalize(),
                 'picture': data['wish_pic'],
                 'date': data['date'],
                 'tags': data['tags'],
-                'dateDiff': (datetime.strptime(data['date'], "%Y-%m-%d").date() - datetime.now().date()).days
+                'dateDiff': (datetime.strptime(data['date'], "%Y-%m-%d").date() - datetime.now().date()).days,
+                'complete': data['complete']
             }
             values.append(data_set)
     else:
@@ -54,13 +55,14 @@ def get_buckets(get_users):
         count = sample(whole_numbers, count)
         for i in range(0, len(count)):
             data_set = {
-                'name': results[count[i]]['wish_name'],
+                'name': results[count[i]]['wish_name'].capitalize(),
                 'picture': results[count[i]]['wish_pic'],
                 'date': results[count[i]]['date'],
                 'tags': results[count[i]]['tags'],
                 'userName': results[count[i]]['user_name'].capitalize(),
                 'dateDiff': (datetime.strptime(results[count[i]]['date'], "%Y-%m-%d").date()
-                             - datetime.now().date()).days
+                             - datetime.now().date()).days,
+                'complete': results[count[i]]['complete']
             }
             values.append(data_set)
 
@@ -172,7 +174,8 @@ def submit_wish():
                     'wish_pic': file_name,
                     'objectId': str(object_id),
                     'date': request.form['date'],
-                    'tags': tags
+                    'tags': tags,
+                    'complete': "F"
                 }
                 current_user = users.find_one({'_id': session['username'].lower()})
                 count = int(current_user['count'])
@@ -214,6 +217,18 @@ def submit_wish():
                 return redirect(url_for('index'))
 
     return redirect(url_for('index'))
+
+
+@app.route('/complete', methods=['POST', 'GET'])
+def complete():
+    if request.method == "POST":
+        bucket_name = request.form['complete'].lower()
+        hash_obj = sha512(session['username'].lower() + bucket_name)
+        hash_obj = hash_obj.hexdigest()
+        buckets.update({'hash_obj': hash_obj}, {'$set': {'complete': "T"}}, upsert=True)
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/images/<filename>')
