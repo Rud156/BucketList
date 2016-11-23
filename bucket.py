@@ -1,11 +1,12 @@
-from flask import Flask, render_template, url_for, request, session, redirect, flash, Markup, make_response
-from pymongo import MongoClient
-from werkzeug.utils import secure_filename
-from gridfs import GridFS
 from datetime import datetime
 from random import sample
-import bcrypt
 
+import hashlib
+import bcrypt
+from flask import Flask, render_template, url_for, request, session, redirect, flash, Markup, make_response
+from gridfs import GridFS
+from pymongo import MongoClient
+from werkzeug.utils import secure_filename
 
 allowed_extensions = ('png', 'jpg', 'gif', 'jpeg', 'JPG')
 values = []
@@ -29,9 +30,9 @@ def allowed_check(file_name):
 
 def get_buckets(get_users):
     if get_users:
-        login_user = users.find_one({'_id': session['username']})
+        login_user = users.find_one({'_id': session['username'].lower()})
         session['count'] = login_user['count']
-        user_buckets = buckets.find({'user_name': session['username']})
+        user_buckets = buckets.find({'user_name': session['username'].lower()})
         del values[:]
         for data in user_buckets:
             data_set = {
@@ -58,7 +59,7 @@ def get_buckets(get_users):
                 'picture': results[count[i]]['wish_pic'],
                 'date': results[count[i]]['date'],
                 'tags': results[count[i]]['tags'],
-                'userName': results[count[i]]['user_name'],
+                'userName': results[count[i]]['user_name'].capitalize(),
                 'dateDiff': (datetime.strptime(results[count[i]]['date'], "%Y-%m-%d").date()
                              - datetime.now().date()).days
             }
@@ -79,12 +80,12 @@ def index():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        login_user = users.find_one({'_id': request.form['userName']})
+        login_user = users.find_one({'_id': request.form['userName'].lower()})
 
         if login_user is not None:
             if bcrypt.hashpw(request.form['passWord'].encode('utf-8'), login_user['password'].encode('utf-8')) == \
                     login_user['password'].encode('utf-8'):
-                session['username'] = request.form['userName']
+                session['username'] = request.form['userName'].capitalize()
                 session['picture'] = login_user['pictureName']
                 session['quote'] = login_user['quote']
                 session['count'] = login_user['count']
@@ -101,8 +102,7 @@ def login():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        print "Function Called"
-        existing_user = users.find_one({'_id': request.form['userName']})
+        existing_user = users.find_one({'_id': request.form['userName'].lower()})
 
         if existing_user is None:
             hash_pass = bcrypt.hashpw(request.form['passWord'].encode('utf-8'), bcrypt.gensalt())
@@ -116,8 +116,8 @@ def register():
             file_name = secure_filename(file_image.filename)
             object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
             data_set = {
-                '_id': request.form['userName'],
-                'name': request.form['userName'],
+                '_id': request.form['userName'].lower(),
+                'name': request.form['userName'].lower(),
                 'quote': request.form['userQuote'],
                 'password': hash_pass,
                 'picture': str(object_id),
@@ -147,40 +147,72 @@ def logout():
 @app.route('/submitWish', methods=['POST', 'GET'])
 def submit_wish():
     if request.method == 'POST':
-        tags = request.form['bucketTags']
-        tags = tags.split("    ;")
-        # noinspection PyShadowingNames
-        file_image = request.files['imageFile']
-        result = allowed_check(file_image.filename)
-        if not result:
-            message = "Incorrect file type. Please input correct file('png', 'jpg', 'gif', 'jpeg')..."
-            flash(message, category='submit')
-            return redirect(url_for('index'))
+        if request.form['update'] == "0":
+            tags = request.form['bucketTags']
+            tags = tags.split("    ;")
+            # noinspection PyShadowingNames
+            file_image = request.files['imageFile']
+            result = allowed_check(file_image.filename)
+            if not result:
+                message = "Incorrect file type. Please input correct file('png', 'jpg', 'gif', 'jpeg')..."
+                flash(message, category='submit')
+                return redirect(url_for('index'))
 
-        file_name = secure_filename(file_image.filename)
-        object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
+            file_name = secure_filename(file_image.filename)
+            object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
 
-        data_set = {
-            'user_name': session['username'],
-            'wish_name': request.form['wishName'],
-            'wish_pic': file_name,
-            'objectId': str(object_id),
-            'date': request.form['date'],
-            'tags': tags
-        }
+            hash_obj = hashlib.sha512(session['username'].lower() + request.form['wishName'].lower())
+            hash_obj = hash_obj.hexdigest()
+            existing_bucket = buckets.find_one({'hash_obj': hash_obj})
 
-        current_user = users.find_one({'_id': session['username']})
-        count = int(current_user['count'])
-        users.update({'_id': session['username']}, {'$set': {'count': str(count + 1)}}, upsert=True)
-        buckets.insert_one(data_set)
-        for tag in tags:
-            data = all_tags.find({'_id': tag})
-            count = data.count()
-            if count <= 0:
-                all_tags.update({'_id': tag}, {'$set': {'count': "1", "1": data_set}}, upsert=True)
+            if existing_bucket is None:
+                data_set = {
+                    'hash_obj': hash_obj,
+                    'user_name': session['username'].lower(),
+                    'wish_name': request.form['wishName'],
+                    'wish_pic': file_name,
+                    'objectId': str(object_id),
+                    'date': request.form['date'],
+                    'tags': tags
+                }
+                current_user = users.find_one({'_id': session['username'].lower()})
+                count = int(current_user['count'])
+                users.update({'_id': session['username'].lower()}, {'$set': {'count': str(count + 1)}}, upsert=True)
+                buckets.insert_one(data_set)
+                for tag in tags:
+                    all_tags.update({'_id': tag}, {'$addToSet': {'name': hash_obj}}, upsert=True)
+
             else:
-                current_count = int(data[0]['count']) + 1
-                all_tags.update({'_id': tag}, {'$set': {'count': str(current_count), str(current_count): data_set}}, upsert=True)
+                message = "Bucket already exists. Enter a new bucket name..."
+                flash(message, category='submit')
+                return redirect(url_for('index'))
+
+        else:
+            tags = request.form['bucketTags']
+            tags = tags.split('    ;')
+
+            old_tags = request.form['old_tags']
+            old_tags = old_tags.split('    ;')
+
+            hash_obj = hashlib.sha512(session['username'].lower() + request.form['wishName'].lower())
+            hash_obj = hash_obj.hexdigest()
+            old_hash = hashlib.sha512(session['username'].lower() + request.form['oldValue'].lower())
+            old_hash = old_hash.hexdigest()
+            existing_bucket = buckets.find_one({'_id': hash_obj})
+
+            if existing_bucket is None:
+                buckets.update({'hash_obj': old_hash}, {'$set': {'wish_name': request.form['wishName'],
+                                                                 'date': request.form['date'], 'tags': tags,
+                                                                 'hash_obj': hash_obj}}, upsert=True)
+                for tag in old_tags:
+                    all_tags.update({'_id': tag}, {'$pull': {'name': old_hash}}, upsert=True)
+                for tag in tags:
+                    all_tags.update({'_id': tag}, {'$addToSet': {'name': hash_obj}}, upsert=True)
+
+            else:
+                message = "Bucket already exists. Enter a new bucket name..."
+                flash(message, category='submit')
+                return redirect(url_for('index'))
 
     return redirect(url_for('index'))
 

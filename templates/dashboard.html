@@ -66,6 +66,7 @@
             <br> <br>
             <input type="text" style="display: none" name="update"/>
             <input type="text" style="display: none" name="oldValue"/>
+            <input type="text" style="display: none" name="old_tags"/>
             <div class="w3-row w3-padding-16">
                 <div class="w3-half matchheight">
                     Put your wish into the box:
@@ -79,7 +80,7 @@
                     Select an image to represent your bucket:
                 </div>
                 <div class="w3-half w3-center">
-                    <span id="bucketImage" class="w3-btn w3-ripple w3-round w3-hover-red w3-orange" id="inputActivator" onclick="inputClick()">
+                    <span id="bucketImage" class="w3-btn w3-ripple w3-round w3-hover-red w3-orange" onclick="inputClick()">
                             Click here to select image...
                         </span>
                     <input type="file" accept="image/*" name="imageFile" required onchange="displayName(files)" id="imageInput" />
@@ -162,10 +163,6 @@
         </div>
     </div>
     <script src="../static/JS/DashScript.js"></script>
-    <script>
-            flatpickr(".flatpickr");
-            $('#tags').tagsInput();
-        </script>
 </body>
 
 </html>

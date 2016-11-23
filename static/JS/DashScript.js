@@ -1,6 +1,6 @@
 var element = document.querySelector("#itemCount");
 var messageBox = document.querySelector("#emptyMessage");
-var imageBtn = document.querySelector("#inputActivator");
+var imageBtn = document.querySelector("#bucketImage");
 var input = document.querySelector("#imageInput");
 var modal_1 = $("#createModal");
 var btn_1 = document.getElementById("createBtn");
@@ -17,10 +17,16 @@ var imageSrc = null;
 var tags = null;
 var dateReq = null;
 
+
+flatpickr(".flatpickr");
+$('#tags').tagsInput({
+    'onChange': addToInput
+});
+
 if (parseInt(element.innerHTML) === 0) {
     messageBox.style.display = "block";
 }
-if (submitBucket.innerHTML.trim() !== ""){
+if (submitBucket.innerHTML.trim() !== "") {
     editBucket(false);
     modal_1.fadeIn();
 }
@@ -101,14 +107,20 @@ function displayAll(event) {
     displayModal.fadeIn();
 }
 
-function submitForm() {
+function submitForm(value) {
     var submit = true;
     var bucketName = document.querySelector("#bucketName").value.trim();
     var tagsName = hiddenTags.value.trim();
-    var bucketDate = document.querySelector("#bucketDate").value.trim();
-    var bucketImage = imageBtn.innerHTML.trim();
-    if (bucketName === "" || tagsName === "" || bucketDate === "" || bucketImage === "Click here to select image...")
-        submit = false;
+    if (value) {
+        var bucketDate = document.querySelector("#bucketDate").value.trim();
+        var bucketImage = imageBtn.innerHTML.trim();
+        if (bucketName === "" || tagsName === "" || bucketDate === "" || bucketImage === "Click here to select image...")
+            submit = false;
+    }
+    else {
+        if (bucketName === "" || tagsName === "" || bucketDate === "")
+            submit = false;
+    }
     if (submit)
         document.querySelector("#bucketForm").submit();
     else
@@ -121,6 +133,8 @@ function editBucket(value) {
         document.querySelector("#bucketName").value = name;
         document.getElementsByName('update')[0].value = "1";
         document.getElementsByName('oldValue')[0].value = name;
+        document.querySelector("#submitBUtton").removeAttribute("onclick");
+        document.querySelector("#submitBUtton").setAttribute("onclick", "submitForm(false)");
 
         var imageName = imageSrc.split('/');
         document.querySelector("#bucketImage").innerHTML = imageName[4];
@@ -129,7 +143,7 @@ function editBucket(value) {
 
         document.querySelector("#imageInput").removeAttribute("required");
 
-        
+
         var tagsArray = tags.replace(/ u'/g, '');
         tagsArray = tagsArray.replace(/'/g, '');
         tagsArray = tagsArray.replace(/u/i, '');
@@ -140,14 +154,18 @@ function editBucket(value) {
         for (var i = 0; i < tagsArray.length; i++) {
             $("#tags").addTag(tagsArray[i]);
             resultString += tagsArray[i];
-            if (i !== tags.length - 1)
+            if (i !== tagsArray.length - 1){
+                console.log("Loop Called");
                 resultString += "    ;";
+            }
         }
+        hiddenTags.value = resultString;
+        document.getElementsByName('old_tags')[0].value = resultString;
 
         document.querySelector("#bucketDate").value = dateReq;
         modal_1.fadeIn();
     }
-    else{
+    else {
         document.querySelector("#submitBUtton").innerHTML = "Add Bucket";
         document.querySelector("#bucketName").value = "";
         document.querySelector("#bucketDate").value = "";
@@ -156,18 +174,13 @@ function editBucket(value) {
         document.querySelector("#bucketImage").className = "w3-btn w3-ripple w3-round w3-hover-red w3-orange";
         document.querySelector("#imageInput").setAttribute("required", "required");
         document.getElementsByName('update')[0].value = "0";
+        document.querySelector("#submitBUtton").removeAttribute("onclick");
+        document.querySelector("#submitBUtton").setAttribute("onclick", "submitForm(true)");
 
         $("#tags").importTags('');
     }
 
 }
-
-$(function () {
-    $("#tags_tag").keydown(function (e) {
-        if (e.keyCode == 13 || e.keyCode == 8)
-            setTimeout(addToInput, 100);
-    });
-});
 
 function addToInput() {
     var tags = document.querySelectorAll("span.tag > span");
