@@ -5,7 +5,8 @@ Work in progress. Please wait...
 <br>
 Requirements:
 <br>
-<- MongoDB
+<
+- MongoDB
 - Flask
 - Pymongo
 - Bcrypt
