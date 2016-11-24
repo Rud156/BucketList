@@ -21,7 +21,7 @@
                 </h2>
             </div>
             <div style="margin-right: 0" class="w3-half matchheight">
-                <ul class="w3-navbar" style="margin: 10px auto;">
+                <ul class="w3-navbar" style="margin: 15px auto;">
                     <li id="loginBtn" class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red"> Log In </li>
                     <li id="signUpBtn" class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px"> Sign Up </li>
                 </ul>
@@ -36,7 +36,7 @@
             <br>
             <input type="password" name="passWord" placeholder="Enter password..." required class="w3-input" />
             <br>
-            <div class="w3-text-indigo w3-large w3-padding-16" id="loginMessage">
+            <div class="w3-text-orange w3-large w3-padding-16" id="loginMessage">
                 {{get_flashed_messages(category_filter=["login"])[0]}}
             </div>
             <br>
@@ -62,7 +62,7 @@
             <br>
             <input type="password" name="rePass" placeholder="Re-Enter password..." required id="secondPass" class="w3-input" />
             <br>
-            <div class="w3-text-indigo w3-padding-16 w3-large" id="flashMessage">
+            <div class="w3-text-orange w3-padding-16 w3-large" id="flashMessage">
                 {{get_flashed_messages(category_filter=["signup"])[0]}}
             </div>
             <br>
@@ -88,7 +88,7 @@
             </div>
             <div id="feedHolder" class="w3-container">
                 {% for i in range(0, valueCount|int) %} {% if i % 3 == 0 %}
-                <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 425px; margin: 1% 0;">
+                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 matchheight" style="margin: 1% 0;">
                     <img src="http://localhost:5000/images/{{result[i]['picture']}}" class="w3-card-8 w3-round-large" width="100%"/>
                     <h1 style="padding: 0; margin: 10px 0">
                         {{result[i]['userName']}}
@@ -105,7 +105,7 @@
                     </span>
                 </div>
                 {% else %}
-                <div class="w3-container w3-third w3-card-8 w3-round-large" style="height: 425px; margin: 1% 0;">
+                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 matchheight" style="margin: 1% 0;">
                     <img src="http://localhost:5000/images/{{result[i]['picture']}}" class="w3-card-8 w3-round-large" width="100%"/>
                     <h1 style="padding: 0; margin: 10px 0">
                         {{result[i]['userName']}}

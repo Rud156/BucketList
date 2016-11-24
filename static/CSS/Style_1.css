@@ -35,10 +35,21 @@ body, div, nav, li, button, span, h1, h2, h3{
 .w3-modal{
     padding-top: 40px !important;
 }
+a:hover{
+    border-bottom: 3px solid rebeccapurple !important;
+}
+ul.w3-navbar{
+    float: right;
+    margin-right: 50px !important;
+}
 
 @media only screen and (max-width: 601px){
-    #signUpBtn, #logOut{
+    #signUpBtn, #logOut, #completeBtn{
         margin-left: 0 !important;
         margin-top: 20px;
+    }
+    ul.w3-navbar{
+        float: none !important;
+        margin-right: 0 !important;
     }
 }

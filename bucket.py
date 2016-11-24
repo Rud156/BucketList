@@ -35,7 +35,7 @@ def get_buckets(get_users):
         del values[:]
         for data in user_buckets:
             data_set = {
-                'name': data['wish_name'].capitalize(),
+                'name': data['wish_name'],
                 'picture': data['wish_pic'],
                 'date': data['date'],
                 'tags': data['tags'],
@@ -47,15 +47,15 @@ def get_buckets(get_users):
         results = buckets.find()
         del values[:]
         count = results.count()
+        whole_numbers = range(0, count)
         if count == 0:
             return
         if count > 6:
             count = 6
-        whole_numbers = range(0, count)
         count = sample(whole_numbers, count)
         for i in range(0, len(count)):
             data_set = {
-                'name': results[count[i]]['wish_name'].capitalize(),
+                'name': results[count[i]]['wish_name'],
                 'picture': results[count[i]]['wish_pic'],
                 'date': results[count[i]]['date'],
                 'tags': results[count[i]]['tags'],
@@ -163,10 +163,10 @@ def submit_wish():
             hash_obj = hash_obj.hexdigest()
             existing_bucket = buckets.find_one({'hash_obj': hash_obj})
 
-            file_name = secure_filename(file_image.filename)
-            object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
-
             if existing_bucket is None:
+                file_name = secure_filename(file_image.filename)
+                object_id = file_system.put(file_image, content_type=file_image.content_type, filename=file_name)
+
                 data_set = {
                     'hash_obj': hash_obj,
                     'user_name': session['username'].lower(),
@@ -190,31 +190,44 @@ def submit_wish():
                 return redirect(url_for('index'))
 
         else:
+            old_name = request.form['oldValue'].lower()
+            new_name = request.form['wishName'].lower()
             tags = request.form['bucketTags']
             tags = tags.split('    ;')
-
             old_tags = request.form['old_tags']
             old_tags = old_tags.split('    ;')
 
-            hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
-            hash_obj = hash_obj.hexdigest()
-            old_hash = sha512(session['username'].lower() + request.form['oldValue'].lower())
-            old_hash = old_hash.hexdigest()
-            existing_bucket = buckets.find_one({'hash_obj': hash_obj})
+            if old_name == new_name:
+                hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
+                hash_obj = hash_obj.hexdigest()
 
-            if existing_bucket is None:
-                buckets.update({'hash_obj': old_hash}, {'$set': {'wish_name': request.form['wishName'],
-                                                                 'date': request.form['date'], 'tags': tags,
-                                                                 'hash_obj': hash_obj}}, upsert=True)
+                buckets.update({'hash_obj': hash_obj}, {'$set': {'date': request.form['date'], 'tags': tags}},
+                               upsert=True)
                 for tag in old_tags:
-                    all_tags.update({'_id': tag}, {'$pull': {'name': old_hash}}, upsert=True)
+                    all_tags.update({'_id': tag}, {'$pull': {'name': hash_obj}}, upsert=True)
                 for tag in tags:
                     all_tags.update({'_id': tag}, {'$addToSet': {'name': hash_obj}}, upsert=True)
-
             else:
-                message = "Bucket already exists. Enter a new bucket name..."
-                flash(message, category='submit')
-                return redirect(url_for('index'))
+
+                hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
+                hash_obj = hash_obj.hexdigest()
+                old_hash = sha512(session['username'].lower() + request.form['oldValue'].lower())
+                old_hash = old_hash.hexdigest()
+                existing_bucket = buckets.find_one({'hash_obj': hash_obj})
+
+                if existing_bucket is None:
+                    buckets.update({'hash_obj': old_hash}, {'$set': {'wish_name': request.form['wishName'],
+                                                                     'date': request.form['date'], 'tags': tags,
+                                                                     'hash_obj': hash_obj}}, upsert=True)
+                    for tag in old_tags:
+                        all_tags.update({'_id': tag}, {'$pull': {'name': old_hash}}, upsert=True)
+                    for tag in tags:
+                        all_tags.update({'_id': tag}, {'$addToSet': {'name': hash_obj}}, upsert=True)
+
+                else:
+                    message = "Bucket already exists. Enter a new bucket name..."
+                    flash(message, category='submit')
+                    return redirect(url_for('index'))
 
     return redirect(url_for('index'))
 
@@ -226,9 +239,13 @@ def complete():
         hash_obj = sha512(session['username'].lower() + bucket_name)
         hash_obj = hash_obj.hexdigest()
         buckets.update({'hash_obj': hash_obj}, {'$set': {'complete': "T"}}, upsert=True)
-        return redirect(url_for('index'))
-    else:
-        return redirect(url_for('index'))
+
+    return redirect(url_for('index'))
+
+
+@app.errorhandler(404)
+def abort(e):
+    return render_template('404.html')
 
 
 @app.route('/images/<filename>')
