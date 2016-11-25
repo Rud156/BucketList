@@ -44,7 +44,7 @@ ul.w3-navbar{
 }
 
 @media only screen and (max-width: 601px){
-    #signUpBtn, #logOut, #completeBtn{
+    #signUpBtn, #logOut, #completeBtn, #endText{
         margin-left: 0 !important;
         margin-top: 20px;
     }

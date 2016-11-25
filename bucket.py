@@ -1,6 +1,7 @@
 from datetime import datetime
-from random import sample
 from hashlib import sha512
+from random import sample
+
 from bcrypt import hashpw, gensalt
 from flask import Flask, render_template, url_for, request, session, redirect, flash, Markup, make_response
 from gridfs import GridFS
