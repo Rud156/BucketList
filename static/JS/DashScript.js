@@ -24,7 +24,6 @@ jQuery(function ($) {
     $('.matchheight').matchHeight();
 });
 
-
 $('#tags').tagsInput({
     'onChange': addToInput,
     'height': '45px'
@@ -108,7 +107,7 @@ function displayAll(event) {
 
     complete = child[9].innerHTML.trim();
     document.getElementsByName('complete')[0].value = name;
-    if (complete === "T"){
+    if (complete === "T") {
         document.querySelector("#completeBtn").className = "w3-btn w3-ripple w3-orange w3-round-large w3-hover-black w3-disabled";
         document.querySelector("#completeBtn").removeAttribute("onclick");
     }
@@ -163,6 +162,24 @@ function submitForm(value) {
         document.querySelector("#bucketForm").submit();
     else
         submitBucket.innerHTML = "Please fill all the fields...";
+}
+
+function deleteBucket() {
+    document.getElementsByName('bucketName')[0].value = name;
+    var tagsArray = tags.replace(/ u'/g, '');
+    tagsArray = tagsArray.replace(/'/g, '');
+    tagsArray = tagsArray.replace(/u/i, '');
+    tagsArray = tagsArray.replace(/]/i, '');
+    tagsArray = tagsArray.replace(/\[/i, '');
+    tagsArray = tagsArray.split(',');
+    var resultString = "";
+    for (var i = 0; i < tagsArray.length; i++) {
+        resultString += tagsArray[i];
+        if (i !== tagsArray.length - 1)
+            resultString += "    ;";
+    }
+    document.getElementsByName('allTags')[0].value = resultString;
+    document.querySelector("#deleteForm").submit();
 }
 
 function editBucket(value) {

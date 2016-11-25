@@ -61,6 +61,11 @@
                         <input type="text" name="complete" style="display: none" />
                         <span class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black" id="completeBtn"> Mark as Complete </span>
                     </form>
+                    <form method="POST" action="{{url_for('delete')}}" id="deleteForm" style="margin-top: 10px">
+                        <input type="text" name="bucketName" style="display: none" />
+                        <input type="text" name="allTags" style="display: none" />
+                        <span class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black" id="deleteBtn" onclick="deleteBucket()"> Delete Bucket </span>
+                    </form>
                 </div>
             </div>
         </div>
@@ -106,7 +111,8 @@
                     Put a date you would like to complete it by:
                 </div>
                 <div class="w3-half w3-center matchheight">
-                    <input type="text" required class="w3-input flatpickr" placeholder="Select date..." name="date" id="bucketDate" readonly />
+                    <input type="text" required class="w3-input flatpickr" placeholder="Select date..." name="date" id="bucketDate" readonly
+                    />
                 </div>
             </div>
             <div class="w3-text-orange w3-large w3-padding-16" id="submitBucket">
@@ -137,8 +143,10 @@
             </div>
             <div id="buckets" class="w3-container">
                 {% for i in range(0, session['count']|int) %} {% if i % 3 == 0 %}
-                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large matchheight" style="margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8 w3-margin-bottom" />                    {{result[i]['name']}}
+                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large matchheight" style="margin: 1% 0; cursor: pointer"
+                    onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8 w3-margin-bottom"
+                    /> {{result[i]['name']}}
                     <span class="hidden">
                         {{result[i]['date']}}
                     </span>
@@ -153,8 +161,10 @@
                     </span>
                 </div>
                 {% else %}
-                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large matchheight" style="margin: 1% 0; cursor: pointer" onclick="displayAll(event)">
-                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8 w3-margin-bottom" />                    {{result[i]['name']}}
+                <div class="w3-container w3-third w3-card-8 w3-round-large w3-padding-8 w3-large matchheight" style="margin: 1% 0; cursor: pointer"
+                    onclick="displayAll(event)">
+                    <img src="http://localhost:5000/images/{{result[i]['picture']}}" width="100%" class="w3-round-large w3-card-8 w3-margin-bottom"
+                    /> {{result[i]['name']}}
                     <span class="hidden">
                         {{result[i]['date']}}
                     </span>

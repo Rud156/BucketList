@@ -243,6 +243,27 @@ def complete():
     return redirect(url_for('index'))
 
 
+@app.route('/delete', methods=['POST', 'GET'])
+def delete():
+    if request.method == "POST":
+        print "Deleting Bucket"
+        bucket_name = request.form['bucketName'].lower()
+        tags = request.form['allTags']
+        tags = tags.split('    ;')
+        hash_obj = sha512(session['username'].lower() + bucket_name)
+        hash_obj = hash_obj.hexdigest()
+
+        buckets.delete_one({'hash_obj': hash_obj})
+        for tag in tags:
+            all_tags.update({'_id': tag}, {'$pull': {'name': hash_obj}}, upsert=True)
+
+        current_user = users.find_one({'_id': session['username'].lower()})
+        count = int(current_user['count'])
+        users.update({'_id': session['username'].lower()}, {'$set': {'count': str(count - 1)}}, upsert=True)
+
+    return redirect(url_for('index'))
+
+
 @app.errorhandler(404)
 def abort(e):
     return render_template('404.html')
