@@ -61,7 +61,6 @@ span_1.onclick = function () {
     modal_1.fadeOut();
 }
 closeModal.onclick = function () {
-    console.log("Function Called");
     displayModal.fadeOut();
 }
 window.onclick = function (event) {
@@ -87,6 +86,9 @@ function inputClick() {
 }
 function invisibleClick() {
     logoutBtn.click();
+}
+function invisibleFavs(){
+    document.querySelector("#favForm").submit();
 }
 function submitComplete() {
     document.querySelector("#completeForm").submit();

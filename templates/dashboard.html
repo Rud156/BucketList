@@ -19,12 +19,12 @@
 <body>
     <nav class="w3-navbar w3-top">
         <div id="navList" class="w3-blue w3-card-8 w3-center">
-            <div class="w3-half matchheight" style="float: left">
+            <div class="w3-col m4 matchheight" style="float: left">
                 <h2 class="w3-xlarge">
                     Welcome {{session['username']}}
                 </h2>
             </div>
-            <div class="w3-half matchheight">
+            <div class="w3-col m8 matchheight">
                 <ul class="w3-navbar" style="margin: 10px auto;">
                     <li>
                         <form method="POST" action="{{url_for('search')}}" id="searchForm">
@@ -32,7 +32,10 @@
                             <span class="w3-btn w3-red" style="height: 39px; margin-right: 10px" onclick="submitSearch()">Go</span>
                         </form>
                     </li>
-                    <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="createBtn"> Create New Bucket List</li>
+                    <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="createBtn">New Bucket List</li>
+                    <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="favBtn" style="margin-left: 10px" onclick="invisibleFavs()">
+                        Favorites
+                    </li>
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px" id="logOut" onclick="invisibleClick()">
                         Log Out
                         <form action="{{url_for('logout')}}" method="POST">

@@ -13,33 +13,62 @@
 </head>
 
 <body>
+    <div id="displayModal" class="w3-modal">
+        <div class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large">
+            <span class="w3-closebtn" id="displayClose">&times;</span>
+            <br> <br>
+            <div class="w3-row">
+                <div class="w3-half">
+                    <img width="100%" class="w3-card-16 w3-round-large" />
+                </div>
+                <div class="w3-half">
+                    <div id="Name" class="w3-xlarge w3-padding-16"></div>
+                    <div id="Date" class="w3-xlarge w3-padding-16"></div>
+                    <div id="tagsHolder"></div>
+                    <div id="DateDiff" class="w3-xlarge w3-padding-16"></div>
+                </div>
+            </div>
+            <div class="w3-row" style="margin-top: 20px">
+                <div class="w3-col m12">
+                    <span class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black" onclick="submitFav()"> Add To Favourites </span>
+                </div>
+                <form method="POST" action="{{url_for('add_favourites')}}" id="addFav" style="display: none">
+                    <input type="text" name="searchBucket" />
+                    <input type="text" name="searchUser" />
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="w3-container w3-xlarge w3-red w3-topnav">
         <span class="w3-opennav w3-center w3-navitem w3-hover-deep-purple w3-col m2">
             <form method="POST" action="{{url_for('home')}}" id="homeForm" class="w3-xlarge w3-center">
                 <span id="homeBtn" onclick="goHome()">
                     Return Home
                 </span>
-            </form>
+        </form>
         </span>
         <span class="w3-navitem w3-center w3-col m10"> Search: {{search_tag}} </span>
     </div>
     <div id="Users">
         {% for val in values %}
-        <div class="w3-container w3-center w3-sand w3-large w3-col m3 w3-padding-16 w3-round-large matchheight" style="margin: 5px">
+        <div class="w3-container w3-center w3-sand w3-large w3-col m3 w3-padding-16 w3-round-large matchheight" style="margin: 5px; cursor: pointer"
+            onclick="displayAll(event)">
             <h2> {{val['wishName']}} </h2>
-            <img src="http://localhost:5000/images/{{val['picture']}}" width="100%" class="w3-round-large w3-card-16" />
-            <section class="w3-padding-8">
+            <img src="http://localhost:5000/images/{{val['picture']}}" width="100%" class="w3-round-large w3-card-16 w3-margin" />
+            <span class="w3-padding-8 w3-margin">
                 User: {{val['userName']}}
-            </section>
-            <section class="w3-padding-8">
+            </span>
+            <br>
+            <span class="w3-padding-8 w3-navitem w3-margin">
                 Date: {{val['date']}}
-            </section>
-            <section class="hidden">
+            </span>
+            <br>
+            <span class="hidden">
                 {{val['tags']}}
-            </section>
-            <section class="hidden">
+            </span>
+            <span class="hidden">
                 {{val['complete']}}
-            </section>
+            </span>
         </div>
         {% endfor %}
     </div>
@@ -47,14 +76,69 @@
     </div>
     <div id="Buckets">
     </div>
+    <script>
+        jQuery(function($){
+            $('.matchheight').matchHeight();
+        });
+        function goHome(){
+            document.querySelector("#homeForm").submit();
+        }
+    </script>
+    <script>
+        var displayModal = $("#displayModal");
+        var closeModal = document.querySelector("#displayClose");
+        closeModal.onclick = function () {
+            displayModal.fadeOut();
+        }
+        window.onclick = function (event) {
+            if(event.target.id === "displayModal")
+                displayModal.fadeOut();
+        }
+        function displayAll(event){
+            var child = null;
+            if (event.target.tagName === "DIV")
+                child = event.target.childNodes;
+            else
+                child = event.target.parentNode.childNodes;
+
+            console.log(child);
+            var name = child[1].innerText;
+            var imageSrc = child[3].src;
+
+            var user = child[5].innerText.trim();
+            user = user.split(' ');
+            user = user[1];
+            document.getElementsByName('searchBucket')[0].value = name;
+            document.getElementsByName('searchUser')[0].value = user;
+
+            var dateReq = child[9].innerText.trim();
+            dateReq = dateReq.split(' ');
+            dateReq = dateReq[1];
+
+            var tags = child[13].innerHTML.trim();
+            var tagsArray = tags.replace(/ u'/g, '');
+            tagsArray = tagsArray.replace(/'/g, '');
+            tagsArray = tagsArray.replace(/u/i, '');
+            tagsArray = tagsArray.replace(/]/i, '');
+            tagsArray = tagsArray.replace(/\[/i, '');
+            tagsArray = tagsArray.split(',');
+
+            $("#tagsHolder").empty();
+            for (var i = 0; i < tagsArray.length; i++)
+                $("#tagsHolder").append('<span class="w3-tag w3-small w3-padding w3-teal w3-center w3-hover-deep-orange\
+                w3-round-large w3-text-shadow" style="cursor: pointer; margin: 1px">' + tagsArray[i] + '</span>');
+
+
+            var image = document.querySelector("#displayModal > div > div > div > img");
+            image.src = imageSrc;
+            document.querySelector("#Name").innerHTML = name;
+            document.querySelector("#Date").innerHTML = dateReq;
+            displayModal.fadeIn();
+        }
+        function submitFav(){
+            document.querySelector("#addFav").submit();
+        }
+    </script>
 </body>
-<script>
-    jQuery(function($){
-        $('.matchheight').matchHeight();
-    });
-    function goHome(){
-        document.querySelector("#homeForm").submit();
-    }
-</script>
 
 </html>

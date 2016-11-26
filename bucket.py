@@ -10,6 +10,8 @@ from werkzeug.utils import secure_filename
 
 allowed_extensions = ('png', 'jpg', 'gif', 'jpeg')
 values = []
+bucket_results = []
+search_value = None
 
 app = Flask(__name__)
 client = MongoClient('localhost:27017')
@@ -266,11 +268,10 @@ def delete():
 
 @app.route('/search', methods=['POST', 'GET'])
 def search():
-    print "Method: " + request.method
     if request.method == "POST":
+        global search_value
         search_value = request.form['searchInput']
-        print search_value
-        bucket_results = []
+        del bucket_results[:]
 
         tags_array = all_tags.find_one({'_id': search_value})
         tags_array = tags_array['name']
@@ -293,6 +294,21 @@ def search():
 
 @app.route('/home', methods=["GET", "POST"])
 def home():
+    return redirect(url_for('index'))
+
+
+@app.route('/search', methods=["GET", "POST"])
+def add_favourites():
+    if request.method == "POST":
+        user_name = request.form['searchUser'].lower()
+        bucket_name = request.form['searchBucket'].lower()
+
+        hash_obj = sha512(user_name + bucket_name)
+        hash_obj = hash_obj.hexdigest()
+
+        users.update({'_id': session['username'].lower()}, {'$addToSet': {'favourites': hash_obj}}, upsert=True)
+        return render_template('search.html', search_tag=search_value.capitalize(), values=bucket_results)
+
     return redirect(url_for('index'))
 
 
