@@ -154,6 +154,8 @@ def submit_wish():
         if request.form['update'] == "0":
             tags = request.form['bucketTags']
             tags = tags.split("    ;")
+            for i in range(0, len(tags)):
+                tags[i] = tags[i].lower()
             # noinspection PyShadowingNames
             file_image = request.files['imageFile']
             result = allowed_check(file_image.filename)
@@ -197,8 +199,12 @@ def submit_wish():
             new_name = request.form['wishName'].lower()
             tags = request.form['bucketTags']
             tags = tags.split('    ;')
+            for i in range(0, len(tags)):
+                tags[i] = tags[i].lower()
             old_tags = request.form['old_tags']
             old_tags = old_tags.split('    ;')
+            for i in range(0, len(old_tags)):
+                old_tags[i] = old_tags[i].lower();
 
             if old_name == new_name:
                 hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
@@ -257,7 +263,7 @@ def delete():
 
         buckets.delete_one({'hash_obj': hash_obj})
         for tag in tags:
-            all_tags.update({'_id': tag}, {'$pull': {'name': hash_obj}}, upsert=True)
+            all_tags.update({'_id': tag.lower()}, {'$pull': {'name': hash_obj}}, upsert=True)
 
         current_user = users.find_one({'_id': session['username'].lower()})
         count = int(current_user['count'])
@@ -270,24 +276,37 @@ def delete():
 def search():
     if request.method == "POST":
         global search_value
-        search_value = request.form['searchInput']
+        search_value = request.form['searchInput'].split(" ")
         del bucket_results[:]
+        result_search = []
+        for i in range(0, len(search_value)):
+            for j in range(i, len(search_value)):
+                search_string = ""
+                for k in range(i, j + 1):
+                    search_string += search_value[k]
+                    if k != j:
+                        search_string += " "
+                result_search.append(search_string)
 
-        tags_array = all_tags.find_one({'_id': search_value})
-        tags_array = tags_array['name']
-        for tag in tags_array:
-            bucket = buckets.find_one({'hash_obj': tag})
-            data_set = {
-                'wishName': bucket['wish_name'],
-                'picture': bucket['wish_pic'],
-                'date': bucket['date'],
-                'userName': bucket['user_name'].capitalize(),
-                'tags': bucket['tags'],
-                'complete': bucket['complete']
-            }
-            bucket_results.append(data_set)
+        for searchTag in result_search:
 
-        return render_template('search.html', search_tag=search_value.capitalize(), values=bucket_results)
+            tags_array = all_tags.find_one({'_id': searchTag.lower()})
+            if tags_array is not None:
+                tags_array = tags_array['name']
+                for tag in tags_array:
+                    bucket = buckets.find_one({'hash_obj': tag})
+                    data_set = {
+                        'wishName': bucket['wish_name'],
+                        'picture': bucket['wish_pic'],
+                        'date': bucket['date'],
+                        'userName': bucket['user_name'].capitalize(),
+                        'tags': bucket['tags'],
+                        'complete': bucket['complete']
+                    }
+                    if data_set not in bucket_results:
+                        bucket_results.append(data_set)
+
+        return render_template('search.html', search_tag=search_value, values=bucket_results)
 
     return redirect(url_for('index'))
 
