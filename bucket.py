@@ -297,7 +297,7 @@ def home():
     return redirect(url_for('index'))
 
 
-@app.route('/search', methods=["GET", "POST"])
+@app.route('/add_favourites', methods=["GET", "POST"])
 def add_favourites():
     if request.method == "POST":
         user_name = request.form['searchUser'].lower()
@@ -306,7 +306,15 @@ def add_favourites():
         hash_obj = sha512(user_name + bucket_name)
         hash_obj = hash_obj.hexdigest()
 
-        users.update({'_id': session['username'].lower()}, {'$addToSet': {'favourites': hash_obj}}, upsert=True)
+        favourites = users.find_one({'_id': session['username'].lower()})
+        favourites = favourites['favourites']
+        if hash_obj not in favourites:
+            message = "Added to favourites..."
+            flash(message, category='favourite')
+            users.update({'_id': session['username'].lower()}, {'$addToSet': {'favourites': hash_obj}}, upsert=True)
+        else:
+            message = "Already added to favourites..."
+            flash(message, category='favourite')
         return render_template('search.html', search_tag=search_value.capitalize(), values=bucket_results)
 
     return redirect(url_for('index'))

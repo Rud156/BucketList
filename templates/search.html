@@ -39,6 +39,12 @@
             </div>
         </div>
     </div>
+    <div id="flashMessage" class="w3-modal">
+        <div class="w3-modal-content w3-padding-16 w3-container w3-green">
+            <span class="w3-closebtn" id="flashClose">&times;</span>
+            <span id="message">{{get_flashed_messages(category_filter=["favourite"])[0]}}</span>
+        </div>
+    </div>
     <div class="w3-container w3-xlarge w3-red w3-topnav">
         <span class="w3-opennav w3-center w3-navitem w3-hover-deep-purple w3-col m2">
             <form method="POST" action="{{url_for('home')}}" id="homeForm" class="w3-xlarge w3-center">
@@ -83,16 +89,26 @@
         function goHome(){
             document.querySelector("#homeForm").submit();
         }
+        var message = document.querySelector("#message").innerHTML.trim();
+        if(message !== "")
+            $("#flashMessage").fadeIn();
     </script>
     <script>
         var displayModal = $("#displayModal");
+        var flashMessage = $("#flashMessage");
         var closeModal = document.querySelector("#displayClose");
+        var flashClose = document.querySelector("#flashClose");
         closeModal.onclick = function () {
             displayModal.fadeOut();
+        }
+        flashClose.onclick = function(){
+            flashMessage.fadeOut();
         }
         window.onclick = function (event) {
             if(event.target.id === "displayModal")
                 displayModal.fadeOut();
+            else if(event.target.id === "flashMessage")
+                flashMessage.fadeOut();
         }
         function displayAll(event){
             var child = null;
