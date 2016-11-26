@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../static/CSS/Style_1.css" />
+    <link rel="stylesheet" href="../static/CSS/W3.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png" />
+    <script src="../static/JS/jquery-2.2.3.js"></script>
+    <script src="../static/JS/jquery.matchHeight.js"></script>
+    <title> Search: {{search_tag}} </title>
+</head>
+
+<body>
+    <div class="w3-container w3-xlarge w3-red w3-topnav">
+        <span class="w3-opennav w3-center w3-navitem w3-hover-deep-purple w3-col m2">
+            <form method="POST" action="{{url_for('home')}}" id="homeForm" class="w3-xlarge w3-center">
+                <span id="homeBtn" onclick="goHome()">
+                    Return Home
+                </span>
+            </form>
+        </span>
+        <span class="w3-navitem w3-center w3-col m10"> Search: {{search_tag}} </span>
+    </div>
+    <div id="Users">
+        {% for val in values %}
+        <div class="w3-container w3-center w3-sand w3-large w3-col m3 w3-padding-16 w3-round-large matchheight" style="margin: 5px">
+            <h2> {{val['wishName']}} </h2>
+            <img src="http://localhost:5000/images/{{val['picture']}}" width="100%" class="w3-round-large w3-card-16" />
+            <section class="w3-padding-8">
+                User: {{val['userName']}}
+            </section>
+            <section class="w3-padding-8">
+                Date: {{val['date']}}
+            </section>
+            <section class="hidden">
+                {{val['tags']}}
+            </section>
+            <section class="hidden">
+                {{val['complete']}}
+            </section>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="Tags">
+    </div>
+    <div id="Buckets">
+    </div>
+</body>
+<script>
+    jQuery(function($){
+        $('.matchheight').matchHeight();
+    });
+    function goHome(){
+        document.querySelector("#homeForm").submit();
+    }
+</script>
+
+</html>

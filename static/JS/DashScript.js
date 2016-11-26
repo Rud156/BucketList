@@ -91,6 +91,11 @@ function invisibleClick() {
 function submitComplete() {
     document.querySelector("#completeForm").submit();
 }
+function submitSearch(){
+    var searchTerm = document.querySelector('#searchForm > input').value.trim();
+    if(searchTerm !== "")
+        document.querySelector("#searchForm").submit();
+}
 
 function displayAll(event) {
     var child = null;

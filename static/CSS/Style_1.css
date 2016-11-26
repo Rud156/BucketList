@@ -44,12 +44,18 @@ ul.w3-navbar{
 }
 
 @media only screen and (max-width: 601px){
-    #signUpBtn, #logOut, #completeBtn, #endText{
+    #signUpBtn, #logOut, #completeBtn, #endText, #createBtn{
         margin-left: 0 !important;
         margin-top: 20px;
     }
     ul.w3-navbar{
         float: none !important;
         margin-right: 0 !important;
+    }
+    li > form > input.w3-input{
+        width: 100% !important;
+    }
+    li > form > span.w3-btn.w3-red{
+        margin: 0 !important;
     }
 }

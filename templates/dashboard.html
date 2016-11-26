@@ -26,6 +26,12 @@
             </div>
             <div class="w3-half matchheight">
                 <ul class="w3-navbar" style="margin: 10px auto;">
+                    <li>
+                        <form method="POST" action="{{url_for('search')}}" id="searchForm">
+                            <input type="text" class="w3-input" placeholder="Enter search tags..." style="float: left; width: 200px" name="searchInput" />
+                            <span class="w3-btn w3-red" style="height: 39px; margin-right: 10px" onclick="submitSearch()">Go</span>
+                        </form>
+                    </li>
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" id="createBtn"> Create New Bucket List</li>
                     <li class="w3-padding w3-btn w3-pink w3-ripple w3-hover-red" style="margin-left: 10px" id="logOut" onclick="invisibleClick()">
                         Log Out

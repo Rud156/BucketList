@@ -247,7 +247,6 @@ def complete():
 @app.route('/delete', methods=['POST', 'GET'])
 def delete():
     if request.method == "POST":
-        print "Deleting Bucket"
         bucket_name = request.form['bucketName'].lower()
         tags = request.form['allTags']
         tags = tags.split('    ;')
@@ -262,6 +261,38 @@ def delete():
         count = int(current_user['count'])
         users.update({'_id': session['username'].lower()}, {'$set': {'count': str(count - 1)}}, upsert=True)
 
+    return redirect(url_for('index'))
+
+
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    print "Method: " + request.method
+    if request.method == "POST":
+        search_value = request.form['searchInput']
+        print search_value
+        bucket_results = []
+
+        tags_array = all_tags.find_one({'_id': search_value})
+        tags_array = tags_array['name']
+        for tag in tags_array:
+            bucket = buckets.find_one({'hash_obj': tag})
+            data_set = {
+                'wishName': bucket['wish_name'],
+                'picture': bucket['wish_pic'],
+                'date': bucket['date'],
+                'userName': bucket['user_name'].capitalize(),
+                'tags': bucket['tags'],
+                'complete': bucket['complete']
+            }
+            bucket_results.append(data_set)
+
+        return render_template('search.html', search_tag=search_value.capitalize(), values=bucket_results)
+
+    return redirect(url_for('index'))
+
+
+@app.route('/home', methods=["GET", "POST"])
+def home():
     return redirect(url_for('index'))
 
 
