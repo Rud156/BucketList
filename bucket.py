@@ -31,7 +31,9 @@ def allowed_check(file_name):
 
 
 def set_favourites():
+    # noinspection PyShadowingNames
     favourites = users.find_one({'_id': session['username'].lower()})
+    # noinspection PyShadowingNames
     favourites = favourites['favourites']
     del bucket_results[:]
 
@@ -223,7 +225,7 @@ def submit_wish():
             old_tags = request.form['old_tags']
             old_tags = old_tags.split('    ;')
             for i in range(0, len(old_tags)):
-                old_tags[i] = old_tags[i].lower();
+                old_tags[i] = old_tags[i].lower()
 
             if old_name == new_name:
                 hash_obj = sha512(session['username'].lower() + request.form['wishName'].lower())
@@ -343,7 +345,9 @@ def add_favourites():
         hash_obj = sha512(user_name + bucket_name)
         hash_obj = hash_obj.hexdigest()
 
+        # noinspection PyShadowingNames
         favourites = users.find_one({'_id': session['username'].lower()})
+        # noinspection PyShadowingNames
         favourites = favourites['favourites']
         if hash_obj not in favourites:
             message = "Added to favourites..."
@@ -385,6 +389,7 @@ def remove_favourites():
         return redirect(url_for('index'))
 
 
+# noinspection PyUnusedLocal
 @app.errorhandler(404)
 def abort(e):
     return render_template('404.html')
