@@ -30,6 +30,24 @@ def allowed_check(file_name):
         return False
 
 
+def set_favourites():
+    favourites = users.find_one({'_id': session['username'].lower()})
+    favourites = favourites['favourites']
+    del bucket_results[:]
+
+    for fav in favourites:
+        bucket = buckets.find_one({'hash_obj': fav})
+        data_set = {
+            'wishName': bucket['wish_name'],
+            'picture': bucket['wish_pic'],
+            'date': bucket['date'],
+            'userName': bucket['user_name'].capitalize(),
+            'tags': bucket['tags'],
+            'complete': bucket['complete']
+        }
+        bucket_results.append(data_set)
+
+
 def get_buckets(get_users):
     if get_users:
         login_user = users.find_one({'_id': session['username'].lower()})
@@ -126,7 +144,8 @@ def register():
                 'password': hash_pass,
                 'picture': str(object_id),
                 'pictureName': file_name,
-                'count': "0"
+                'count': "0",
+                "favourites": []
             }
             users.insert(data_set)
             message = Markup("Successfully Registered. Please login to continue...")
@@ -305,8 +324,7 @@ def search():
                     }
                     if data_set not in bucket_results:
                         bucket_results.append(data_set)
-
-        return render_template('search.html', search_tag=search_value, values=bucket_results)
+        return render_template('search.html', search_tag=search_value, values=bucket_results, count=len(bucket_results))
 
     return redirect(url_for('index'))
 
@@ -334,10 +352,37 @@ def add_favourites():
         else:
             message = "Already added to favourites..."
             flash(message, category='favourite')
-        return render_template('search.html', search_tag=search_value.capitalize(), values=bucket_results)
+
+        return render_template('search.html', search_tag=search_value, values=bucket_results,
+                               count=len(bucket_results))
 
     return redirect(url_for('index'))
 
+
+@app.route('/favourites', methods=['GET', 'POST'])
+def favourites():
+    if 'username' in session:
+        set_favourites()
+        return render_template('favourites.html', values=bucket_results, count=len(bucket_results))
+
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/remove_favourites', methods=['GET', 'POST'])
+def remove_favourites():
+    if request.method == "POST":
+        user_name = request.form['favUser'].lower()
+        bucket_name = request.form['favBucket'].lower()
+
+        hash_obj = sha512(user_name + bucket_name)
+        hash_obj = hash_obj.hexdigest()
+        users.update({'_id': session['username'].lower()}, {'$pull': {'favourites': hash_obj}})
+        set_favourites()
+        return render_template('favourites.html', values=bucket_results, count=len(bucket_results))
+
+    else:
+        return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def abort(e):

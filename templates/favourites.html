@@ -12,8 +12,154 @@
     <title>{{session['username']}}'s Favourites</title>
 </head>
 
-<body>
+<body class="w3-center">
+    <div id="displayModal" class="w3-modal">
+        <div class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large">
+            <span class="w3-closebtn" id="displayClose">&times;</span>
+            <br> <br>
+            <div class="w3-row">
+                <div class="w3-half">
+                    <img width="100%" class="w3-card-16 w3-round-large" />
+                </div>
+                <div class="w3-half">
+                    <div id="Name" class="w3-xlarge w3-padding-16"></div>
+                    <div id="Date" class="w3-xlarge w3-padding-16"></div>
+                    <div id="tagsHolder"></div>
+                    <div id="DateDiff" class="w3-xlarge w3-padding-16"></div>
+                </div>
+            </div>
+            <div class="w3-row" style="margin-top: 20px">
+                <div class="w3-col m12">
+                    <span class="w3-btn w3-ripple w3-orange w3-round-large w3-hover-black" onclick="submitFav()">Remove Favourite</span>
+                </div>
+                <form method="POST" action="{{url_for('remove_favourites')}}" id="removeFav" style="display: none">
+                    <input type="text" name="favBucket" />
+                    <input type="text" name="favUser" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="w3-container w3-xlarge w3-red w3-topnav">
+        <span class="w3-opennav w3-center w3-navitem w3-hover-deep-purple w3-col m2">
+            <form method="POST" action="{{url_for('home')}}" id="homeForm" class="w3-xlarge w3-center">
+                <span id="homeBtn" onclick="goHome()">
+                    Return Home
+                </span>
+        </form>
+        </span>
+        <span class="w3-navitem w3-center w3-col m10"> My Favourites </span>
+    </div>
+    <div id="flashMessage" class="w3-modal">
+        <div class="w3-modal-content w3-padding-16 w3-container w3-green">
+            <span class="w3-closebtn" id="flashClose">&times;</span>
+            <span id="message">{{get_flashed_messages(category_filter=["favourite"])[0]}}</span>
+        </div>
+    </div>
+    <div id="itemCount" style="display: none">{{count}}</div>
+    <div id="emptyMessage" style="margin-top: 20px; clear: both; display: none" class="w3-container w3-padding-16">
+        <img src="../static/Images/EmptyToDo.jpg" class="w3-round-large" width="70%" />
+        <br> <br> <span class="w3-text-red w3-xlarge w3-text-shadow">Nothing to show here yet...</span>
+    </div>
+    <div id="Favourites">
+        {% for val in values %}
+        <div class="w3-container w3-center w3-sand w3-large w3-col m3 w3-padding-16 w3-round-large" style="margin: 5px; cursor: pointer"
+            onclick="displayAll(event)">
+            <h2> {{val['wishName']}} </h2>
+            <img src="http://localhost:5000/images/{{val['picture']}}" width="100%" class="w3-round-large w3-card-16" />
+            <span class="w3-padding-8 w3-margin">
+                User: {{val['userName']}}
+            </span>
+            <br>
+            <span class="w3-padding-8 w3-navitem w3-margin">
+                Date: {{val['date']}}
+            </span>
+            <br>
+            <span class="hidden">
+                {{val['tags']}}
+            </span>
+            <span class="hidden">
+                {{val['complete']}}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        jQuery(function($){
+            $('.matchheight').matchHeight();
+        });
+        var message = document.querySelector("#message").innerHTML.trim();
+        if(message !== "")
+            $("#flashMessage").fadeIn();
 
+        var itemCount = document.querySelector("#itemCount").innerHTML.trim();
+        if(parseInt(itemCount) === 0)
+            document.querySelector("#emptyMessage").style.display = "block";
+
+        function goHome(){
+            document.querySelector("#homeForm").submit();
+        }
+    </script>
+    <script>
+        var displayModal = $("#displayModal");
+        var flashMessage = $("#flashMessage");
+        var closeModal = document.querySelector("#displayClose");
+        var flashClose = document.querySelector("#flashClose");
+        closeModal.onclick = function () {
+            displayModal.fadeOut();
+        }
+        flashClose.onclick = function(){
+            flashMessage.fadeOut();
+        }
+        window.onclick = function (event) {
+            if(event.target.id === "displayModal")
+                displayModal.fadeOut();
+            else if(event.target.id === "flashMessage")
+                flashMessage.fadeOut();
+        }
+        function displayAll(event){
+            var child = null;
+            if (event.target.tagName === "DIV")
+                child = event.target.childNodes;
+            else
+                child = event.target.parentNode.childNodes;
+
+            var name = child[1].innerText;
+            var imageSrc = child[3].src;
+
+            var user = child[5].innerText.trim();
+            user = user.split(' ');
+            user = user[1];
+            document.getElementsByName('favBucket')[0].value = name;
+            document.getElementsByName('favUser')[0].value = user;
+
+            var dateReq = child[9].innerText.trim();
+            dateReq = dateReq.split(' ');
+            dateReq = dateReq[1];
+
+            var tags = child[13].innerHTML.trim();
+            var tagsArray = tags.replace(/ u'/g, '');
+            tagsArray = tagsArray.replace(/'/g, '');
+            tagsArray = tagsArray.replace(/u/i, '');
+            tagsArray = tagsArray.replace(/]/i, '');
+            tagsArray = tagsArray.replace(/\[/i, '');
+            tagsArray = tagsArray.split(',');
+
+            $("#tagsHolder").empty();
+            for (var i = 0; i < tagsArray.length; i++)
+                $("#tagsHolder").append('<span class="w3-tag w3-small w3-padding w3-teal w3-center w3-hover-deep-orange\
+                w3-round-large w3-text-shadow" style="cursor: pointer; margin: 1px">' + tagsArray[i] + '</span>');
+
+
+            var image = document.querySelector("#displayModal > div > div > div > img");
+            image.src = imageSrc;
+            document.querySelector("#Name").innerHTML = name;
+            document.querySelector("#Date").innerHTML = dateReq;
+            displayModal.fadeIn();
+        }
+        function submitFav(){
+            document.querySelector("#removeFav").submit();
+        }
+    </script>
 </body>
 
 </html>

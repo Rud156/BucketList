@@ -9,10 +9,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="../static/Images/bucket-list.png" />
     <script src="../static/JS/jquery-2.2.3.js"></script>
     <script src="../static/JS/jquery.matchHeight.js"></script>
-    <title> Search: {{search_tag}} </title>
+    <title> Search Results </title>
 </head>
 
-<body>
+<body class="w3-center">
     <div id="displayModal" class="w3-modal">
         <div class="w3-modal-content w3-container w3-green w3-center w3-padding-16 w3-round-large">
             <span class="w3-closebtn" id="displayClose">&times;</span>
@@ -53,14 +53,19 @@
                 </span>
         </form>
         </span>
-        <span class="w3-navitem w3-center w3-col m10"> Search: {{search_tag}} </span>
+        <span class="w3-navitem w3-center w3-col m10"> Search Results </span>
+    </div>
+    <div id="itemCount" style="display: none">{{count}}</div>
+    <div id="emptyMessage" style="margin-top: 20px; clear: both; display: none" class="w3-container w3-padding-16">
+        <img src="../static/Images/NoResults.png" class="w3-round-large" width="70%" />
+        <br> <br> <span class="w3-text-red w3-xlarge w3-text-shadow">Sorry you're query did not match any results...</span>
     </div>
     <div id="Users">
         {% for val in values %}
         <div class="w3-container w3-center w3-sand w3-large w3-col m3 w3-padding-16 w3-round-large matchheight" style="margin: 5px; cursor: pointer"
             onclick="displayAll(event)">
             <h2> {{val['wishName']}} </h2>
-            <img src="http://localhost:5000/images/{{val['picture']}}" width="100%" class="w3-round-large w3-card-16 w3-margin" />
+            <img src="http://localhost:5000/images/{{val['picture']}}" width="100%" class="w3-round-large w3-card-16" />
             <span class="w3-padding-8 w3-margin">
                 User: {{val['userName']}}
             </span>
@@ -78,10 +83,6 @@
         </div>
         {% endfor %}
     </div>
-    <div id="Tags">
-    </div>
-    <div id="Buckets">
-    </div>
     <script>
         jQuery(function($){
             $('.matchheight').matchHeight();
@@ -92,6 +93,10 @@
         var message = document.querySelector("#message").innerHTML.trim();
         if(message !== "")
             $("#flashMessage").fadeIn();
+
+        var itemCount = document.querySelector("#itemCount").innerHTML.trim();
+        if(parseInt(itemCount) === 0)
+            document.querySelector("#emptyMessage").style.display = "block";
     </script>
     <script>
         var displayModal = $("#displayModal");
@@ -117,7 +122,6 @@
             else
                 child = event.target.parentNode.childNodes;
 
-            console.log(child);
             var name = child[1].innerText;
             var imageSrc = child[3].src;
 
