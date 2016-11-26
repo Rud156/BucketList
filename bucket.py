@@ -384,6 +384,7 @@ def remove_favourites():
     else:
         return redirect(url_for('index'))
 
+
 @app.errorhandler(404)
 def abort(e):
     return render_template('404.html')
