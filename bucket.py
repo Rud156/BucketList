@@ -39,6 +39,9 @@ def set_favourites():
 
     for fav in favourites:
         bucket = buckets.find_one({'hash_obj': fav})
+        if bucket is None:
+            users.update({'_id': session['username'].lower()}, {'$pull': {'favourites': fav}})
+            continue
         data_set = {
             'wishName': bucket['wish_name'],
             'picture': bucket['wish_pic'],
