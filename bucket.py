@@ -35,11 +35,13 @@ def set_favourites():
     favourites = users.find_one({'_id': session['username'].lower()})
     # noinspection PyShadowingNames
     favourites = favourites['favourites']
+    counter = 0
     del bucket_results[:]
 
     for fav in favourites:
         bucket = buckets.find_one({'hash_obj': fav})
         if bucket is None:
+            counter += 1
             users.update({'_id': session['username'].lower()}, {'$pull': {'favourites': fav}})
             continue
         data_set = {
@@ -51,6 +53,8 @@ def set_favourites():
             'complete': bucket['complete']
         }
         bucket_results.append(data_set)
+
+    return counter
 
 
 def get_buckets(get_users):
@@ -369,7 +373,10 @@ def add_favourites():
 @app.route('/favourites', methods=['GET', 'POST'])
 def favourites():
     if 'username' in session:
-        set_favourites()
+        counter = set_favourites()
+        if counter != 0:
+            message = str(counter) + " favourite(s) have been removed as they have been removed by their uploaders."
+            flash(message, category='edit_fav')
         return render_template('favourites.html', values=bucket_results, count=len(bucket_results))
 
     else:
@@ -385,7 +392,12 @@ def remove_favourites():
         hash_obj = sha512(user_name + bucket_name)
         hash_obj = hash_obj.hexdigest()
         users.update({'_id': session['username'].lower()}, {'$pull': {'favourites': hash_obj}})
-        set_favourites()
+        counter = set_favourites()
+        message = "Bucket removed from favourites"
+        if counter != 0:
+            message += (" " + str(counter) + " favourites have also been removed as they have been removed\
+             by their respective uploaders")
+        flash(message, category='edit_fav')
         return render_template('favourites.html', values=bucket_results, count=len(bucket_results))
 
     else:
